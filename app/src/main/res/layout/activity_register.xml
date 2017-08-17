@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:scaleType="fitXY"
+                android:id="@+id/updateDp"
+                android:src="@drawable/ic_dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:layout_gravity="center_horizontal"
+                android:hint="update profile pic"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="User Id"
+                    android:textSize="12sp"
+                    android:inputType="text"
+                    android:id="@+id/etUid"
+                    android:textColor="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center"
+                >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="enter your email/id"
+                android:textSize="12sp"
+                android:inputType="textEmailAddress"
+                android:id="@+id/etEmail"
+                android:textColor="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center"
+
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="enter your first name"
+                    android:textSize="12sp"
+                    android:inputType="text"
+                    android:id="@+id/etFname"
+                    android:textColor="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="enter your last name"
+                    android:textSize="12sp"
+                    android:inputType="text"
+                    android:id="@+id/etLname"
+                    android:textColor="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Date of Birth"
+                    android:textSize="12sp"
+                    android:inputType="date"
+                    android:id="@+id/etDob"
+                    android:textColor="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:theme="@style/TextLabel">
+
+                <EditText
+                    android:id="@+id/etCountry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Country"
+                    android:inputType="text"
+                    android:textColor="@color/colorIntoTextEdit"
+                    android:textSize="12sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:theme="@style/TextLabel">
+
+                <EditText
+                    android:id="@+id/etState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="State"
+                    android:inputType="text"
+                    android:textColor="@color/colorIntoTextEdit"
+                    android:textSize="12sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:theme="@style/TextLabel">
+
+                <EditText
+                    android:id="@+id/etCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="City"
+                    android:inputType="text"
+                    android:textColor="@color/colorIntoTextEdit"
+                    android:textSize="12sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="enter your password"
+                    android:textSize="12sp"
+                    android:inputType="textPassword"
+                    android:id="@+id/etPassword"
+                    android:textColorHint="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextLabel"
+                android:layout_gravity="center">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="enter password again"
+                    android:textSize="12sp"
+                    android:inputType="textPassword"
+                    android:id="@+id/etCpassword"
+                    android:textColorHint="@color/colorIntoTextEdit"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:contentPaddingLeft="16dp"
+                app:contentPaddingRight="16dp"
+                app:contentPaddingTop="8dp"
+                app:contentPaddingBottom="8dp"
+                app:cardElevation="5dp"
+                android:onClick="RegisterActivity">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="sign up"
+                    android:background="@color/colorAccent"
+                    android:id="@+id/submit"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"/>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
