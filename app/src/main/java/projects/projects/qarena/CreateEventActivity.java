@@ -10,19 +10,27 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
@@ -40,25 +48,25 @@ import java.util.Map;
 
 import projects.projects.qarena.app.AppConfig;
 import projects.projects.qarena.app.AppController;
-import projects.projects.qarena.app.VolleySingleton;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
 
 /**
  * Created by Arka Bhowmik on 2/22/2017.
  */
-public class CreateEvent extends Activity implements View.OnClickListener {
+public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
     ProgressDialog pDialog;
     SessionManager session;
     SQLiteHandler db;
     String uid = new String();
     String email = new String();
     public Bitmap dp;
-    ImageButton dpView;
+    ImageView dpView;
     private int PICK_IMAGE_REQUEST = 1;
     String TAG = AccountEdit.class.getSimpleName();
     EditText etQname, etQid, etAddress, etDescp, etPartNum, etQFee, etAgeTo, etAgeFrom, etDateTo, etDateFrom;
-    Button submit; int flag=0;
+    TextView submit;
+    int flag = 0;
     Calendar myCalendar = Calendar.getInstance();
 
     //--------------------------------------UTILITIES---------------------------------------------------------
@@ -98,7 +106,9 @@ public class CreateEvent extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("hiiiii");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_quiz);
+        setContentView(R.layout.activity_create_event);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         System.out.println("hiiiii");
         etQid = (EditText) findViewById(R.id.etQid);
         etQname = (EditText) findViewById(R.id.etQname);
@@ -106,20 +116,20 @@ public class CreateEvent extends Activity implements View.OnClickListener {
         etDescp = (EditText) findViewById(R.id.etQuiz_descp);
         etAgeFrom=(EditText)findViewById(R.id.etAge_from);
         etAgeTo=(EditText)findViewById(R.id.etAge_to);
-        etDateTo.setOnClickListener(this) ;
-        etDateFrom.setOnClickListener(this);
-        dpView = (ImageButton) findViewById(R.id.quizDp);
+        //etDateTo.setOnClickListener(this) ;
+        //etDateFrom.setOnClickListener(this);
+        dpView = (ImageView) findViewById(R.id.quizDp);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
-        submit = (Button) findViewById(R.id.submit);
-        submit.setOnClickListener(this);
+        submit = (TextView) findViewById(R.id.submit);
+        //submit.setOnClickListener(this);
         findViewById(R.id.quiz_locater).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
                     String url = "http://maps.google.co.in/maps?q=" + URLEncoder.encode(etAddress.getText().toString(), "utf-8");
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    CreateEvent.this.startActivity(intent);
+                    CreateEventActivity.this.startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -131,7 +141,47 @@ public class CreateEvent extends Activity implements View.OnClickListener {
                 showFileChooser();
             }
         });
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.getMenu().findItem(R.id.item4).setVisible(false);
+        navigationView.getMenu().findItem(R.id.item5).setVisible(false);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.item1:
+                        startActivity(new Intent(CreateEventActivity.this, ProfileActivity.class));
+                        finish();
+                        break;
+                    case R.id.item2:
+                        startActivity(new Intent(CreateEventActivity.this, QuizzesActivity.class));
+                        finish();
+                        break;
+                    case R.id.item3:
+                        startActivity(new Intent(CreateEventActivity.this, CreateEventActivity.class));
+                        finish();
+                        break;
+                    case R.id.item4:
+                        break;
+                    case R.id.item5:
+                        break;
+                }
+                return true;
+            }
+        });
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
 
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
     //-----------------------------------------------------------------------------
         // Session manager
@@ -167,12 +217,12 @@ public class CreateEvent extends Activity implements View.OnClickListener {
                // uploadQuiz();
                  break;
             case R.id.etQdate_from: flag=0;
-                new DatePickerDialog(CreateEvent.this, date, myCalendar
+                new DatePickerDialog(CreateEventActivity.this, date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 break;
             case R.id.etQdate_to:flag=1;
-                new DatePickerDialog(CreateEvent.this, date, myCalendar
+                new DatePickerDialog(CreateEventActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 break;
@@ -210,7 +260,7 @@ public class CreateEvent extends Activity implements View.OnClickListener {
                         Toast.makeText(getApplicationContext(), "User successfully updated your account", Toast.LENGTH_LONG).show();
                         // Launch login activity
                         Intent intent = new Intent(
-                                CreateEvent.this,
+                                CreateEventActivity.this,
                                 FirstActivity.class);
                         startActivity(intent);
                         finish();
