@@ -35,5 +35,6 @@
         <item>Offline</item>
     </string-array>
     <string name="title_activity_create_edit_quiz">CreateEditQuizActivity</string>
+    <string name="title_activity_quiz_register">QuizRegisterActivity</string>
 
 </resources>

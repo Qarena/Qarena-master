@@ -5,4 +5,5 @@
     <color name="colorAccent">#6b2469</color>
     <color name="colorIntoTextEdit">#eec45594</color>
     <color name="darkish">#471e1e1e</color>
+    <color name="text_light">#98fffefe</color>
 </resources>

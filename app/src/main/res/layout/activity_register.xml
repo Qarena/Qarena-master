@@ -54,14 +54,14 @@
                 android:layout_gravity="center"
                 >
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="enter your email/id"
-                android:textSize="12sp"
-                android:inputType="textEmailAddress"
-                android:id="@+id/etEmail"
-                android:textColor="@color/colorIntoTextEdit"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="enter your email/id"
+                    android:textSize="12sp"
+                    android:inputType="textEmailAddress"
+                    android:id="@+id/etEmail"
+                    android:textColor="@color/colorIntoTextEdit"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

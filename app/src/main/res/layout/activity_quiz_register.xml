@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="projects.projects.qarena.QuizRegisterActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:theme="@style/AppTheme.NoActionBar.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/qarena_text"
+                    android:layout_margin="16dp" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="@android:color/background_light"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal"
+                    android:id="@+id/top_container">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:id="@+id/updateDp"
+                        android:src="@drawable/ic_dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="16dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
+
+
+
+
+                        <android.support.v7.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            app:cardCornerRadius="16dp"
+                            app:contentPaddingLeft="4dp"
+                            app:contentPaddingRight="4dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="saytap.tapadar5@gmail.com"
+                                android:layout_marginLeft="16dp"
+                                android:gravity="center_vertical"
+                                android:textSize="12sp"
+                                android:id="@+id/etEmail"
+                                android:textColor="@color/colorIntoTextEdit"/>
+                        </android.support.v7.widget.CardView>
+                        <android.support.v7.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            app:cardCornerRadius="16dp"
+                            app:contentPaddingLeft="4dp"
+                            app:contentPaddingRight="4dp"
+                            android:layout_marginTop="2dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:weightSum="2">
+
+                                <TextView
+                                    android:id="@+id/etFname"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Sayan Tapadar"
+                                    android:layout_marginLeft="16dp"
+                                    android:textColor="@color/colorIntoTextEdit"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginLeft="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gender: "
+                                android:textColor="@android:color/white"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Male"
+                                android:layout_marginLeft="4dp"
+                                android:textColor="@android:color/white"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Age: "
+                                android:layout_marginLeft="16dp"
+                                android:textColor="@android:color/white"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="21"
+                                android:layout_marginLeft="4dp"
+                                android:textColor="@android:color/white"/>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_above="@+id/below_container"
+                    android:layout_below="@+id/top_container"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true">
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/TextLabel"
+                        android:layout_gravity="center"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date of Birth"
+                            android:textSize="12sp"
+                            android:inputType="date"
+                            android:id="@+id/etDob"
+                            android:textColor="@color/colorIntoTextEdit"/>
+                    </android.support.design.widget.TextInputLayout>
+
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:theme="@style/TextLabel"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etCountry"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Country"
+                            android:inputType="text"
+                            android:textColor="@color/colorIntoTextEdit"
+                            android:textSize="12sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:theme="@style/TextLabel"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etState"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="State"
+                            android:inputType="text"
+                            android:textColor="@color/colorIntoTextEdit"
+                            android:textSize="12sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:theme="@style/TextLabel"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="City"
+                            android:inputType="text"
+                            android:textColor="@color/colorIntoTextEdit"
+                            android:textSize="12sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/TextLabel"
+                        android:layout_gravity="center"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="password"
+                            android:textSize="12sp"
+                            android:inputType="textPassword"
+                            android:id="@+id/etPassword"
+                            android:textColorHint="@color/colorIntoTextEdit"/>
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/TextLabel"
+                        android:layout_gravity="center"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="re-enter password"
+                            android:textSize="12sp"
+                            android:inputType="textPassword"
+                            android:id="@+id/etCpassword"
+                            android:textColorHint="@color/colorIntoTextEdit"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="#dfd2df"
+                        app:cardCornerRadius="20dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/textView2"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:text="Quiz"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Animal kingdom"
+                                android:textSize="14sp"
+                                android:layout_marginLeft="16dp"/>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="#dfd2df"
+                        app:cardCornerRadius="20dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:text="State"
+                                android:textSize="14sp"
+                                android:layout_marginLeft="16dp"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="West Bengal"
+                                android:textSize="14sp"
+                                android:layout_marginLeft="16dp"/>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="#dfd2df"
+                        app:cardCornerRadius="20dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:text="City"
+                                android:textSize="14sp"
+                                android:layout_marginLeft="16dp"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Kolkata"
+                                android:textSize="14sp"
+                                android:layout_marginLeft="16dp"/>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/below_container"
+                    android:layout_alignParentBottom="true"
+                    android:weightSum="2">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginRight="1dp"
+                        android:orientation="vertical"
+                        android:background="@color/colorPrimary">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:src="@drawable/paytm_logo"
+                            android:padding="26dp"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Pay via Paytm"
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="Pay directly via Paytm to the organiser's number without having to do it later on."
+                            android:gravity="center"
+                            android:textColor="@color/text_light"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="1dp"
+                        android:orientation="vertical"
+                        android:background="@color/colorPrimary">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:src="@drawable/cash_receipt"
+                            android:padding="26dp"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Pay via Cash"
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="Pay directly via cash at the registration desk on the day of the event"
+                            android:gravity="center"
+                            android:textColor="@color/text_light"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="32dp"
+                    app:cardBackgroundColor="@color/colorAccent"
+                    app:contentPaddingLeft="16dp"
+                    app:contentPaddingRight="16dp"
+                    app:contentPaddingTop="8dp"
+                    app:contentPaddingBottom="8dp"
+                    app:cardElevation="5dp"
+                    android:onClick="RegisterActivity"
+                    android:visibility="gone">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="sign up"
+                        android:background="@color/colorAccent"
+                        android:id="@+id/submit"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"/>
+                </android.support.v7.widget.CardView>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/drawer" />
+</android.support.v4.widget.DrawerLayout>

@@ -207,10 +207,9 @@ public class QuizzesActivity extends AppCompatActivity {
                     String[] vals= quizzes.get(position).age_res.split(" ");
                     int age_to=Integer.parseInt(vals[0]);
                     int age_from=Integer.parseInt(vals[2]);
-
+                    startActivity(new Intent(QuizzesActivity.this,QuizRegisterActivity.class));
                 }
             });
-
 
             Log.d("pic url",quizzes.get(position).picUrl );
             Glide.with(QuizzesActivity.this)
