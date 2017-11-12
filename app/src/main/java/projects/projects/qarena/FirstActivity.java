@@ -7,10 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -50,9 +52,9 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
-        Button signup=(Button)findViewById(R.id.register);
+        TextView signup = (TextView) findViewById(R.id.register);
         signup.setOnClickListener(this);
-        Button login=(Button)findViewById(R.id.login);
+        TextView login = (TextView) findViewById(R.id.login);
         login.setOnClickListener(this);
         email=(EditText)findViewById(R.id.email);
         password=(EditText)findViewById(R.id.password);
