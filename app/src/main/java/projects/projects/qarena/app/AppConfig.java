@@ -7,7 +7,7 @@ public class AppConfig {
 
     public static String BASE_URL = "https://qufinder.000webhostapp.com/";
 
-    public static String URL_LOGIN = " https://qufinder.000webhostapp.com//login.php";
+    public static String URL_LOGIN = "http://35.198.203.61/utilities/login";
 
     // Server user register url
     public static String URL_REGISTER = " https://qufinder.000webhostapp.com//register.php";
