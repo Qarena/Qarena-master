@@ -30,4 +30,7 @@ public class AppConfig {
     public static String URL_DP = " https://qufinder.000webhostapp.com//uploads";
 
     public static String signallingIp="http://192.168.0.100:7800";
+
+
+    public static String URL_SearchQuiz = "http://35.198.203.61/utilities/search_quiz";
 }
