@@ -1,6 +1,7 @@
 package projects.projects.qarena;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -29,6 +31,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,6 +81,26 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 showFileChooser();
+            }
+        });
+
+        Calendar calendar = Calendar.getInstance();
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        String date = i + "-" + (i1 + 1) + "-" + i2;
+                        etDob.setText(date);
+                    }
+                },
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        etDob.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    datePickerDialog.show();
+                }
             }
         });
 
@@ -178,7 +202,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         // User successfully stored in MySQL
                         // Now store the user in sqlite
 
-                        JSONObject user = jObj.getJSONObject("formdata");
+                        /*JSONObject user = jObj.getJSONObject("formdata");
                         String email = user.getString("email");
                         String uid = user.getString("user_id");
                         String password = user.getString("password");
@@ -190,7 +214,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         String lastname = user.getString("last_name");
 
                         //Inserting row in users table
-                        db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);
+                        db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);*/
 
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
