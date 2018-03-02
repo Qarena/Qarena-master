@@ -33,8 +33,7 @@ public class AppConfig {
 
     public static String signallingIp="http://192.168.0.100:7800";
 
-
-    public static String URL_SearchQuiz = "http://35.198.203.61/utilities/search_quiz";
-
+    public static String URL_SearchQuiz = "http://35.198.203.61/utilities/advanced_search_quiz";
+    public static String URL_ImageEndpoint = "http://35.198.203.61/utilities/image?file_name=";
 
 }

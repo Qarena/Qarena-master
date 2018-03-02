@@ -19,6 +19,7 @@ public class QuizEntity {
     String organizer_id;
     String address;
     String shortAddress;
+    String prize;
 
     public QuizEntity(String title, String description) {
         this.title = title;

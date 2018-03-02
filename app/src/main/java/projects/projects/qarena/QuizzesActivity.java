@@ -1,8 +1,11 @@
 package projects.projects.qarena;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,9 +34,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +57,9 @@ public class QuizzesActivity extends AppCompatActivity {
     SQLiteHandler db;
     private static final String TAG = QuizzesActivity.class.getSimpleName();
     String uid = new String();
+    ArrayList<QuizEntity> quizzes;
+    Adapter adapter;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +79,10 @@ public class QuizzesActivity extends AppCompatActivity {
         uid = user.get("user_id");
         //---------------------------------------------------
 
-        ArrayList<QuizEntity> quizzes = new ArrayList<>();
+        quizzes = new ArrayList<>();
         //TODO get the details of quizzes and store in this ArrayList
         //..............Example................
-        QuizEntity quiz = new QuizEntity();
+        /*QuizEntity quiz = new QuizEntity();
         quiz.title = "Animal Kingdom";
         quiz.age_res = "18 to 25 Years";
         quiz.category = "Animals/Species";
@@ -86,7 +98,12 @@ public class QuizzesActivity extends AppCompatActivity {
         quiz.price = "INR 50";
         quiz.time_to = "12:00 AM";
         quiz.time_from = "10:00 AM";
-        quizzes.add(quiz);
+        quizzes.add(quiz);*/
+
+        dialog = new ProgressDialog(QuizzesActivity.this);
+        dialog.setIndeterminate(true);
+        dialog.setMessage("Loading quizzes near you");
+        dialog.show();
 
         final RequestQueue requestQueue = VolleySingleton.getRequestQueue(this);
         requestQueue.start();
@@ -94,19 +111,51 @@ public class QuizzesActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        dialog.dismiss();
                         requestQueue.stop();
                         Log.d("SearchResponse", response);
+
+                        try {
+                            JSONArray results = (new JSONObject(response)).getJSONArray("results");
+                            for (int i = 0; i < results.length(); i++) {
+                                JSONObject obj = results.getJSONObject(i);
+                                QuizEntity quiz = new QuizEntity();
+                                quiz.title = obj.getString("title");
+                                quiz.age_res = obj.getString("age_range_from") + " to " + obj.getString("age_range_to") + " Years";
+                                quiz.category = obj.getString("category");
+                                quiz.level = obj.getString("level");
+                                //quiz.mode = 1;
+                                //quiz.organizer_id = "rickyBuoy";
+                                //quiz.status = 0;
+                                quiz.max_part = Integer.parseInt(obj.getString("participant_count_max"));
+                                quiz.address = obj.getString("gps");
+                                quiz.shortAddress = obj.getString("address");
+                                quiz.description = obj.getString("description");
+                                quiz.picUrl = AppConfig.URL_ImageEndpoint + obj.getString("cpl_name");
+                                quiz.price = "INR " + obj.getString("price");
+                                quiz.time_to = getDate(obj.getString("datetime_from"));
+                                quiz.time_from = getDate(obj.getString("datetime_to"));
+                                quiz.prize = obj.getString("prizes");
+                                quizzes.add(quiz);
+                            }
+                            adapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 requestQueue.stop();
+                dialog.dismiss();
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("city", "Gurgaon");
+                params.put("city", "Kolkata");
+                params.put("datetime_from", "2017-01-01 00:00");
+
                 return params;
             }
         };
@@ -124,7 +173,7 @@ public class QuizzesActivity extends AppCompatActivity {
 
 
         viewPager = (ViewPager) findViewById(R.id.content_pager);
-        Adapter adapter = new Adapter(quizzes);
+        adapter = new Adapter(quizzes);
         viewPager.setAdapter(adapter);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -169,6 +218,19 @@ public class QuizzesActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+    private String getDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date testDate = null;
+        try {
+            testDate = sdf.parse(date);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM hh:mm a");
+        String newFormat = formatter.format(testDate);
+        return newFormat;
+    }
+
     private class Adapter extends PagerAdapter {
         ArrayList<QuizEntity> quizzes;
 
@@ -207,11 +269,12 @@ public class QuizzesActivity extends AppCompatActivity {
             ((TextView) layout.findViewById(R.id.title)).setText(quizzes.get(position).title);
             ((TextView) layout.findViewById(R.id.organizer)).setText(quizzes.get(position).organizer_id);
             ((TextView) layout.findViewById(R.id.description)).setText(quizzes.get(position).description);
-            ((TextView) layout.findViewById(R.id.who_can_apply)).setText(quizzes.get(position).age_res);
             ((TextView) layout.findViewById(R.id.quiz_price)).setText(quizzes.get(position).price);
             ((TextView) layout.findViewById(R.id.quiz_address)).setText(quizzes.get(position).shortAddress);
             ((TextView) layout.findViewById(R.id.quiz_time_from)).setText(quizzes.get(position).time_from);
             ((TextView) layout.findViewById(R.id.quiz_time_to)).setText(quizzes.get(position).time_to);
+            ((TextView) layout.findViewById(R.id.quiz_category)).setText(quizzes.get(position).category);
+            ((TextView) layout.findViewById(R.id.quiz_level)).setText(quizzes.get(position).level);
             if (quizzes.get(position).status != 2)
                 ((ImageButton) layout.findViewById(R.id.btStatus)).setImageResource(R.drawable.ic_isonline_true);
 
@@ -230,9 +293,21 @@ public class QuizzesActivity extends AppCompatActivity {
             layout.findViewById(R.id.quiz_prizes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO REGISTER
-
-                    showPrizes();
+                    final AlertDialog dialog = new AlertDialog.Builder(QuizzesActivity.this)
+                            .setView(((LayoutInflater) QuizzesActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.more_info_layout, null, false))
+                            .setPositiveButton("Okay", null)
+                            .create();
+                    dialog.show();
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                    ((TextView) dialog.findViewById(R.id.more_info_prize_1)).setText(quizzes.get(position).prize.split(";")[0]);
+                    ((TextView) dialog.findViewById(R.id.more_info_prize_2)).setText(quizzes.get(position).prize.split(";")[1]);
+                    ((TextView) dialog.findViewById(R.id.more_info_prize_3)).setText(quizzes.get(position).prize.split(";")[2]);
+                    ((TextView) dialog.findViewById(R.id.more_info_age)).setText(quizzes.get(position).age_res);
                 }
             });
             //register button
