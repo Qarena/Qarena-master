@@ -1,8 +1,10 @@
 package projects.projects.qarena;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,6 +60,9 @@ public class ProfileActivity extends AppCompatActivity  {
     private static final String TAG = ProfileActivity.class.getSimpleName();
     String uid = new String();
     String user_id;
+    private TextView sortOption;
+    private String city = "Kolkata";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +76,26 @@ public class ProfileActivity extends AppCompatActivity  {
         tvPoints = (TextView) findViewById(R.id.tvPoints);
         tvLocation = (TextView) findViewById(R.id.tvLocation);
         proPic = (ImageView) findViewById(R.id.profile_pic);
+        sortOption = (TextView) findViewById(R.id.sort_option);
+
+        sortOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String[] cities = new String[]{"Kolkata", "Jaynagar", "Raniganj", "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
+                new AlertDialog.Builder(ProfileActivity.this)
+                        .setTitle("Choose City")
+                        .setItems(cities,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        city = cities[i];
+                                        sortOption.setText(city);
+                                        loadQuiz(city);
+                                    }
+                                })
+                        .create().show();
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabi);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +138,7 @@ public class ProfileActivity extends AppCompatActivity  {
 
 
         quizRecycler = (RecyclerView) findViewById(R.id.quiz_recycler);
-        loadQuiz("gurgaon");
+        loadQuiz("Kolkata");
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -231,7 +256,7 @@ public class ProfileActivity extends AppCompatActivity  {
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Response: " + response.toString());
                 hideDialog();
-                Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
                 JSONArray quizArray=null;
                 try {
                     dataModelArrayList=new ArrayList<>();
@@ -240,16 +265,16 @@ public class ProfileActivity extends AppCompatActivity  {
                         JSONObject quizDetail=quizArray.getJSONObject(i);
                         QuizEntity quizEntity=new QuizEntity();
                         quizEntity.setTitle(quizDetail.getString("title"));
-                        Toast.makeText(ProfileActivity.this,quizDetail.getString("title") , Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ProfileActivity.this,quizDetail.getString("title") , Toast.LENGTH_SHORT).show();
                         quizEntity.setDescription(quizDetail.getString("description"));
-                        Toast.makeText(ProfileActivity.this,quizDetail.getString("description") , Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ProfileActivity.this,quizDetail.getString("description") , Toast.LENGTH_SHORT).show();
 
                         dataModelArrayList.add(quizEntity);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(ProfileActivity.this, dataModelArrayList.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfileActivity.this, dataModelArrayList.toString(), Toast.LENGTH_SHORT).show();
                 quizRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
                 adapter = new ProfileQuizRecyclerAdapter(ProfileActivity.this,dataModelArrayList);
@@ -295,7 +320,7 @@ public class ProfileActivity extends AppCompatActivity  {
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Response: " + response.toString());
                 hideDialog();
-                Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
                 JSONObject jsonObject = null;
                 try {
                     jsonObject = new JSONObject(response);

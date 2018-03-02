@@ -109,20 +109,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="locate my city"
+            android:text="Kolkata"
             android:textColor="#c06bbf"
             android:textSize="16sp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:id="@+id/sort_option"/>
+            android:id="@+id/sort_option" />
 
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="16dp"
-            android:layout_toLeftOf="@+id/sort_option"
-            android:src="@android:drawable/btn_dropdown" />
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -60,6 +60,8 @@ public class QuizzesActivity extends AppCompatActivity {
     ArrayList<QuizEntity> quizzes;
     Adapter adapter;
     ProgressDialog dialog;
+    private TextView sortOption;
+    private String city = "Kolkata";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,66 +102,29 @@ public class QuizzesActivity extends AppCompatActivity {
         quiz.time_from = "10:00 AM";
         quizzes.add(quiz);*/
 
-        dialog = new ProgressDialog(QuizzesActivity.this);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Loading quizzes near you");
-        dialog.show();
+        findQuizzes();
 
-        final RequestQueue requestQueue = VolleySingleton.getRequestQueue(this);
-        requestQueue.start();
-        StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_SearchQuiz,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        dialog.dismiss();
-                        requestQueue.stop();
-                        Log.d("SearchResponse", response);
-
-                        try {
-                            JSONArray results = (new JSONObject(response)).getJSONArray("results");
-                            for (int i = 0; i < results.length(); i++) {
-                                JSONObject obj = results.getJSONObject(i);
-                                QuizEntity quiz = new QuizEntity();
-                                quiz.title = obj.getString("title");
-                                quiz.age_res = obj.getString("age_range_from") + " to " + obj.getString("age_range_to") + " Years";
-                                quiz.category = obj.getString("category");
-                                quiz.level = obj.getString("level");
-                                //quiz.mode = 1;
-                                //quiz.organizer_id = "rickyBuoy";
-                                //quiz.status = 0;
-                                quiz.max_part = Integer.parseInt(obj.getString("participant_count_max"));
-                                quiz.address = obj.getString("gps");
-                                quiz.shortAddress = obj.getString("address");
-                                quiz.description = obj.getString("description");
-                                quiz.picUrl = AppConfig.URL_ImageEndpoint + obj.getString("cpl_name");
-                                quiz.price = "INR " + obj.getString("price");
-                                quiz.time_to = getDate(obj.getString("datetime_from"));
-                                quiz.time_from = getDate(obj.getString("datetime_to"));
-                                quiz.prize = obj.getString("prizes");
-                                quizzes.add(quiz);
-                            }
-                            adapter.notifyDataSetChanged();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        sortOption = (TextView) findViewById(R.id.sort_option);
+        sortOption.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                requestQueue.stop();
-                dialog.dismiss();
+            public void onClick(View view) {
+                final String[] cities = new String[]{"Kolkata", "Jaynagar", "Raniganj", "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
+                new AlertDialog.Builder(QuizzesActivity.this)
+                        .setTitle("Choose City")
+                        .setItems(cities,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        city = cities[i];
+                                        sortOption.setText(city);
+                                        findQuizzes();
+                                    }
+                                })
+                        .create().show();
             }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("city", "Kolkata");
-                params.put("datetime_from", "2017-01-01 00:00");
+        });
 
-                return params;
-            }
-        };
-        requestQueue.add(request);
+
 
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabQuiz);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +183,70 @@ public class QuizzesActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+    void findQuizzes() {
+        quizzes.clear();
+        dialog = new ProgressDialog(QuizzesActivity.this);
+        dialog.setIndeterminate(true);
+        dialog.setMessage("Loading quizzes near you");
+        dialog.show();
+
+        final RequestQueue requestQueue = VolleySingleton.getRequestQueue(this);
+        requestQueue.start();
+        StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_SearchQuiz,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        dialog.dismiss();
+                        requestQueue.stop();
+                        Log.d("SearchResponse", response);
+
+                        try {
+                            JSONArray results = (new JSONObject(response)).getJSONArray("results");
+                            for (int i = 0; i < results.length(); i++) {
+                                JSONObject obj = results.getJSONObject(i);
+                                QuizEntity quiz = new QuizEntity();
+                                quiz.title = obj.getString("title");
+                                quiz.age_res = obj.getString("age_range_from") + " to " + obj.getString("age_range_to") + " Years";
+                                quiz.category = obj.getString("category");
+                                quiz.level = obj.getString("level");
+                                //quiz.mode = 1;
+                                //quiz.organizer_id = "rickyBuoy";
+                                //quiz.status = 0;
+                                quiz.max_part = Integer.parseInt(obj.getString("participant_count_max"));
+                                quiz.address = obj.getString("gps");
+                                quiz.shortAddress = obj.getString("address");
+                                quiz.description = obj.getString("description");
+                                quiz.picUrl = AppConfig.URL_ImageEndpoint + obj.getString("cpl_name");
+                                quiz.price = "INR " + obj.getString("price");
+                                quiz.time_to = getDate(obj.getString("datetime_from"));
+                                quiz.time_from = getDate(obj.getString("datetime_to"));
+                                quiz.prize = obj.getString("prizes");
+                                quizzes.add(quiz);
+                            }
+                            adapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestQueue.stop();
+                dialog.dismiss();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("city", city);
+                params.put("datetime_from", "2017-01-01 00:00");
+
+                return params;
+            }
+        };
+        requestQueue.add(request);
+    }
     private String getDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date testDate = null;
@@ -358,7 +387,7 @@ public class QuizzesActivity extends AppCompatActivity {
 
     //--------------------------------------ONLINE STUFF--------------------------------------------
     private void logoutUser() {
-        session.setLogin(false,null);
+        session.setLogin(false, null);
 
         db.deleteUsers();
 
