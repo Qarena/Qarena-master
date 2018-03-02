@@ -376,6 +376,15 @@ public class QuizzesActivity extends AppCompatActivity {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (quizzes.contains((View) object)) {
+                return quizzes.indexOf((View) object);
+            } else {
+                return POSITION_NONE;
+            }
+        }
     }
 
     public void showPrizes() {
