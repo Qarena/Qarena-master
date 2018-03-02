@@ -10,15 +10,17 @@ public class AppConfig {
     public static String URL_LOGIN = "http://35.198.203.61/utilities/login";
 
     // Server user register url
-    public static String URL_REGISTER = " https://qufinder.000webhostapp.com//register.php";
-
+    public static String URL_REGISTER = "http://35.198.203.61/utilities/register_user";
+    public static final String UPLOAD_URL = URL_REGISTER + "uploadpic";
+    public static final String GET_PICS_URL = URL_REGISTER + "getpics";
     // Server user notification handling url
     public static String URL_NOTIFICATIONS = " https://qufinder.000webhostapp.com//notifications.php";
     // Server user friends url
-    public static String URL_QUIZ = " https://qufinder.000webhostapp.com//quiz.php";
+    public static String URL_QUIZ = "http://35.198.203.61/utilities/search_quiz";
+    public static String URL_CREATE_QUIZ="http://35.198.203.61/utilities/create_quiz";
     public static String URL_FRIENDS = " https://qufinder.000webhostapp.com//friends.php";
     // Server user profile url
-    public static String URL_PROFILE = " https://qufinder.000webhostapp.com//profile.php";
+    public static String URL_PROFILE = "http://35.198.203.61/utilities/get_profile_details";
 
     // Server user session url
     public static String URL_SESSION = " https://qufinder.000webhostapp.com//session.php";
@@ -33,4 +35,6 @@ public class AppConfig {
 
 
     public static String URL_SearchQuiz = "http://35.198.203.61/utilities/search_quiz";
+
+
 }

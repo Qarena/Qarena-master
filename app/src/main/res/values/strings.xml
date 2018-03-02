@@ -36,5 +36,6 @@
     </string-array>
     <string name="title_activity_create_edit_quiz">CreateEditQuizActivity</string>
     <string name="title_activity_quiz_register">QuizRegisterActivity</string>
+    <string name="title_activity_maps_location">Map</string>
 
 </resources>

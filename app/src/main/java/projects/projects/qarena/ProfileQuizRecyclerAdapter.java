@@ -1,6 +1,6 @@
 package projects.projects.qarena;
 
-import android.graphics.Movie;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,18 +14,23 @@ import java.util.List;
  */
 
 public class ProfileQuizRecyclerAdapter extends RecyclerView.Adapter<ProfileQuizRecyclerAdapter.MyViewHolder> {
-
+    List<QuizEntity> dataArrayList;
+    QuizEntity quizEntity;
+    Context context;
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, year, genre;
+        public TextView title, description;
 
         public MyViewHolder(View view) {
             super(view);
+            this.title=(TextView)view.findViewById(R.id.quizTitle);
+            this.description=(TextView)view.findViewById(R.id.quizDescription);
         }
     }
 
 
-    public ProfileQuizRecyclerAdapter() {
-
+    public ProfileQuizRecyclerAdapter(Context context, List<QuizEntity> dataArrayList) {
+        this.dataArrayList= dataArrayList;
+        this.context=context;
     }
 
     @Override
@@ -39,10 +44,15 @@ public class ProfileQuizRecyclerAdapter extends RecyclerView.Adapter<ProfileQuiz
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         //TODO
+        quizEntity=dataArrayList.get(position);
+        holder.title.setText(quizEntity.getTitle());
+        holder.description.setText(quizEntity.getDescription());
+
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+
+        return dataArrayList.size();
     }
 }

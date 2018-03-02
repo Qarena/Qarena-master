@@ -20,10 +20,10 @@ class Person extends PersonLite {
     public Person(PersonLite p) {
         this.name = p.getName();
         this.id = p.getId();
-        this.isOnline = p.getIsOnline();
-        this.dp = p.getDp();
-        this.locLat = p.getLat();
-        this.locLong = p.getLong();
+        //this.isOnline = p.getIsOnline();
+       // this.dp = p.getDp();
+      //  this.locLat = p.getLat();
+       // this.locLong = p.getLong();
 
     }
 

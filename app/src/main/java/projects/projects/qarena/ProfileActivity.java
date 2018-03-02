@@ -30,9 +30,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,17 +45,19 @@ import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity  {
-
+    private String jsonResponse;
     private ProgressDialog pDialog;
-    Person p;
-
-    private TextView tvName, tvStatus, tvLoc, tvDob, tvId;
+    PersonLite p;
+    RecyclerView quizRecycler;
+    ProfileQuizRecyclerAdapter adapter;
+    ArrayList<QuizEntity> dataModelArrayList;
+    private TextView tvName, tvPoints, tvLocation, tvDob, tvEmail;
     ImageView proPic;
     SessionManager session;
     SQLiteHandler db;
     private static final String TAG = ProfileActivity.class.getSimpleName();
     String uid = new String();
-
+    String user_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +66,12 @@ public class ProfileActivity extends AppCompatActivity  {
         setSupportActionBar(toolbar);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
+        tvEmail = (TextView) findViewById(R.id.tvEmail);
+        tvName = (TextView) findViewById(R.id.tvName);
+        tvPoints = (TextView) findViewById(R.id.tvPoints);
+        tvLocation = (TextView) findViewById(R.id.tvLocation);
+        proPic = (ImageView) findViewById(R.id.profile_pic);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabi);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,16 +89,12 @@ public class ProfileActivity extends AppCompatActivity  {
         if (!session.isLoggedIn()) {
             logoutUser();
         }
+        user_id= session.getUserId();
+        Toast.makeText(this, "The saved user id"+user_id, Toast.LENGTH_SHORT).show();
         HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");
         //------------------------------------------------------------------------------------------
-        loadProfile(uid);
-        tvId = (TextView) findViewById(R.id.tvId);
-        tvName = (TextView) findViewById(R.id.tvName);
-        tvStatus = (TextView) findViewById(R.id.tvStatus);
-        tvLoc = (TextView) findViewById(R.id.tvLoc);
-        proPic = (ImageView) findViewById(R.id.profile_pic);
-        tvId.setText(uid);
+        loadProfile(user_id);
 
 
         ImageLoader ir = VolleySingleton.getInstance().getImageLoader();
@@ -96,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity  {
         ir.get(imageUrl, new com.android.volley.toolbox.ImageLoader.ImageListener() {
             @Override
             public void onResponse(com.android.volley.toolbox.ImageLoader.ImageContainer response, boolean isImmediate) {
-                proPic.setImageBitmap(response.getBitmap());
+               // proPic.setImageBitmap(response.getBitmap());
             }
 
             @Override
@@ -106,11 +112,8 @@ public class ProfileActivity extends AppCompatActivity  {
         });
 
 
-        RecyclerView quizRecycler = (RecyclerView) findViewById(R.id.quiz_recycler);
-        ProfileQuizRecyclerAdapter adapter = new ProfileQuizRecyclerAdapter();
-        quizRecycler.setAdapter(adapter);
-        quizRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
+        quizRecycler = (RecyclerView) findViewById(R.id.quiz_recycler);
+        loadQuiz("gurgaon");
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -208,7 +211,7 @@ public class ProfileActivity extends AppCompatActivity  {
     }
 
     private void logoutUser() {
-        session.setLogin(false);
+        session.setLogin(false,null);
 
         db.deleteUsers();
 
@@ -218,65 +221,41 @@ public class ProfileActivity extends AppCompatActivity  {
         finish();
     }
 
+    private void loadQuiz(final String city){
+        String tag_string_quiz = "req_quiz";
 
-    private void loadProfile(final String uid) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_profile";
-
-        pDialog.setMessage("Loading Profile ...");
-        //showDialog();
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_PROFILE, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                AppConfig.URL_QUIZ, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Response: " + response.toString());
                 hideDialog();
-
+                Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
+                JSONArray quizArray=null;
                 try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
-                    String link = new String();
-                    // Check for error node in json
-                    if (!error) {
-                        //fetch the person's details
-                        JSONObject user = jObj.getJSONObject("profile");
-                        p = new Person();
-                        p.setName(user.getString("first_name") + " " + user.getString("last_name"));
-                        if (!user.getString("curr_lat").isEmpty() && !user.getString("curr_long").isEmpty())
-                            p.setLat(user.getDouble("curr_lat"));
-                        p.setLong(user.getDouble("curr_long"));
-                        p.setCountry(user.getString("country"));
-                        p.setCity(user.getString("city"));
-                        p.setState(user.getString("state"));
-                        p.setDOB(user.getString("dob"));
-                        p.setIsOnline(user.getInt("is_online"));
-                        if (!user.getString("pro_pic").isEmpty()) {
-                            p.setDp(link = AppConfig.URL_DP + user.getString("pro_pic"));
-                            System.out.println(link);
+                    dataModelArrayList=new ArrayList<>();
+                    quizArray=new JSONArray(response);
+                    for (int i=0;i<quizArray.length();i++){
+                        JSONObject quizDetail=quizArray.getJSONObject(i);
+                        QuizEntity quizEntity=new QuizEntity();
+                        quizEntity.setTitle(quizDetail.getString("title"));
+                        Toast.makeText(ProfileActivity.this,quizDetail.getString("title") , Toast.LENGTH_SHORT).show();
+                        quizEntity.setDescription(quizDetail.getString("description"));
+                        Toast.makeText(ProfileActivity.this,quizDetail.getString("description") , Toast.LENGTH_SHORT).show();
 
-                        }
-                        if (p != null) {
-                            tvName.setText(p.getName());
-                            // tvDob.setText(tvDob.getText()+p.getDOB());
-                            tvLoc.setText(p.getCity() + " | " + p.getState() + " | " + p.getCountry());
-
-
-                        }
-
-
-                    } else {
-                        // Error in login. Get the error message
-                        String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                        dataModelArrayList.add(quizEntity);
                     }
                 } catch (JSONException e) {
-                    // JSON error
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
+                Toast.makeText(ProfileActivity.this, dataModelArrayList.toString(), Toast.LENGTH_SHORT).show();
+                quizRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+
+                adapter = new ProfileQuizRecyclerAdapter(ProfileActivity.this,dataModelArrayList);
+                quizRecycler.setAdapter(adapter);
+
+
 
             }
         }, new Response.ErrorListener() {
@@ -294,8 +273,65 @@ public class ProfileActivity extends AppCompatActivity  {
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("uid", uid);
-                params.put("type", "1");
+                params.put("city", city);
+                return params;
+            }
+
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(stringRequest, tag_string_quiz);
+    }
+    private void loadProfile(final String uid) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_profile";
+
+        pDialog.setMessage("Loading Profile ...");
+        //showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_PROFILE, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Loading Response: " + response.toString());
+                hideDialog();
+                Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(response);
+                    tvName.setText(jsonObject.getString("first_name")+"  "
+                            +jsonObject.getString("last_name"));
+                    tvEmail.setText(jsonObject.getString("email"));
+                    tvPoints.setText("Points :  "+jsonObject.getString("points"));
+                    tvLocation.setText(jsonObject.getString("city")+" | "
+                         +jsonObject.getString("current_state")+" | "+jsonObject.getString("country"));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Login Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+                hideDialog();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+
+
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("user_id", uid);
                 return params;
             }
 

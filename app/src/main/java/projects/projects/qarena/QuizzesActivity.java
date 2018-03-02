@@ -32,7 +32,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -284,7 +283,7 @@ public class QuizzesActivity extends AppCompatActivity {
 
     //--------------------------------------ONLINE STUFF--------------------------------------------
     private void logoutUser() {
-        session.setLogin(false);
+        session.setLogin(false,null);
 
         db.deleteUsers();
 

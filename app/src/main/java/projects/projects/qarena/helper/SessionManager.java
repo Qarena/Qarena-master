@@ -9,6 +9,7 @@ public class SessionManager {
     // Shared preferences file name
     private static final String PREF_NAME = "QarenaLogin";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_USER_ID="user_id";
     // LogCat tag
     private static String TAG = SessionManager.class.getSimpleName();
     // Shared Preferences
@@ -24,16 +25,20 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void setLogin(boolean isLoggedIn) {
+    public void setLogin(boolean isLoggedIn, String user_id) {
 
         editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
+        editor.putString(KEY_USER_ID,user_id);
 
         // commit changes
         editor.commit();
 
         Log.d(TAG, "User login session modified!");
     }
-
+    public String getUserId(){
+        String userID=pref.getString(KEY_USER_ID,null);
+        return userID;
+    }
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGED_IN, false);
     }

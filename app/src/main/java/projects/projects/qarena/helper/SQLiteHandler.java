@@ -31,6 +31,12 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "user_id";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_FIRSTNAME = "firstname";
+    private static final String KEY_LASTNAME = "lastname";
+    private static final String KEY_DOB = "dob";
+    private static final String KEY_COUNTRY = "country";
+    private static final String KEY_STATE = "state";
+    private static final String KEY_CITY = "city";
 
 
     public SQLiteHandler(Context context) {
@@ -42,7 +48,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_USER + "("
                 + KEY_ID + " TEXT PRIMARY KEY," + KEY_EMAIL + " TEXT UNIQUE,"
-                + KEY_PASSWORD + " TEXT )";
+                + KEY_PASSWORD + " TEXT,"+ KEY_FIRSTNAME + " TEXT," + KEY_LASTNAME + " TEXT," +
+                KEY_DOB + " TEXT," + KEY_COUNTRY + " TEXT," + KEY_STATE + " TEXT,"+ KEY_CITY + " TEXT )";
         db.execSQL(CREATE_LOGIN_TABLE);
 
         Log.d(TAG, "Database tables created");
@@ -61,15 +68,20 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      */
-    public void addUser(String uid, String email, String password) {
+    public void addUser(String uid, String email, String password,String firstname, String lastname,
+                        String dob,String country,String state,String city) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID, uid); // Name
         values.put(KEY_EMAIL, email); // Email
         values.put(KEY_PASSWORD, password); // Password
-
-
+        values.put(KEY_FIRSTNAME,firstname);//firstname
+        values.put(KEY_LASTNAME, lastname);//lastname
+        values.put(KEY_DOB,dob);//date of birth
+        values.put(KEY_COUNTRY,country);//country
+        values.put(KEY_STATE,state);//state
+        values.put(KEY_CITY,city);//city
         // Inserting Row
         long id = db.insert(TABLE_USER, null, values);
         db.close(); // Closing database connection
@@ -91,7 +103,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             user.put("user_id", cursor.getString(cursor.getColumnIndex("user_id")));
             user.put("email", cursor.getString(cursor.getColumnIndex("email")));
-            // user.put("password", cursor.getString(3));
+            user.put("password", cursor.getString(cursor.getColumnIndex("password")));
+            user.put("firstname",cursor.getString(cursor.getColumnIndex("firstname")));
+            user.put("lastname",cursor.getString(cursor.getColumnIndex("lastname")));
+            user.put("dob",cursor.getString(cursor.getColumnIndex("dob")));
+            user.put("country",cursor.getString(cursor.getColumnIndex("country")));
+            user.put("state",cursor.getString(cursor.getColumnIndex("state")));
+            user.put("city",cursor.getString(cursor.getColumnIndex("city")));
+
+
             //System.out.println( cursor.getString(3));
 
         }

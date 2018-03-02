@@ -264,7 +264,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
 
 
     private void logoutUser() {
-        session.setLogin(false);
+        session.setLogin(false,null);
 
         db.deleteUsers();
 

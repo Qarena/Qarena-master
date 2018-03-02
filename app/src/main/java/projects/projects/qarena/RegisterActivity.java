@@ -9,23 +9,18 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
@@ -91,9 +86,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         submit = (Button) findViewById(R.id.submit);
         submit.setOnClickListener(this);
 
-        // Session manager
-        session = new SessionManager(getApplicationContext());
-        // SQLite database handler
+        SessionManager session = new SessionManager(getApplicationContext());
         db = new SQLiteHandler(getApplicationContext());
 
         // Check if user is already logged in or not
@@ -163,7 +156,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
         pDialog.setMessage("Registering ...");
         showDialog();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        dp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] imageBytes = baos.toByteArray();
 
+        final String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        // System.out.println("BABE:  " + encodedImage);
+        
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.URL_REGISTER, new Response.Listener<String>() {
 
@@ -179,12 +178,19 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         // User successfully stored in MySQL
                         // Now store the user in sqlite
 
-                        JSONObject user = jObj.getJSONObject("user");
+                        JSONObject user = jObj.getJSONObject("formdata");
                         String email = user.getString("email");
                         String uid = user.getString("user_id");
                         String password = user.getString("password");
-                        /*Inserting row in users table
-                        db.addUser(uid, email, password);*/
+                        String dob = user.getString("dob");
+                        String country = user.getString("country");
+                        String state = user.getString("state");
+                        String city = user.getString("city");
+                        String firstname = user.getString("first_name");
+                        String lastname = user.getString("last_name");
+
+                        //Inserting row in users table
+                        db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);
 
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
@@ -220,9 +226,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
             @Override
             protected Map<String, String> getParams() {
+
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("pro_pic", getStringImage(scaleDown(dp,800,true)));
+                params.put("pro_pic", encodedImage);
                 params.put("user_id", uid);
                 params.put("email", email);
                 params.put("password", password);
@@ -236,10 +243,14 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 return params;
             }
 
-        };
+        };{
+            int socketTimeout = 30000;
+            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            strReq.setRetryPolicy(policy);
+            AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        }
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
     private void showDialog() {
@@ -254,7 +265,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 //---------------------------------------------------------------------
 
 
-    public String getStringImage(Bitmap bmp) {
+   /* public String getStringImage(Bitmap bmp) {
         if(bmp==null)
             return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -262,15 +273,15 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         byte[] imageBytes = baos.toByteArray();
 
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-       // System.out.println("BABE:  " + encodedImage);
+        // System.out.println("BABE:  " + encodedImage);
         return encodedImage;
-    }
+    }*/
 
     private void showFileChooser() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        intent.putExtra("outputFormat",Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(intent,PICK_IMAGE_REQUEST);
     }
 
 
@@ -283,6 +294,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             try {
                 //Getting the Bitmap from Gallery
                 dp = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
+                //encoding image to string
                 //Setting the Bitmap to ImageView
                 dpView.setImageBitmap(dp);
             } catch (IOException e) {

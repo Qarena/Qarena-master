@@ -3,6 +3,7 @@ package projects.projects.qarena;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -20,12 +21,11 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -54,7 +54,7 @@ import projects.projects.qarena.helper.SessionManager;
 /**
  * Created by Arka Bhowmik on 2/22/2017.
  */
-public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateEventActivity extends AppCompatActivity  {
     ProgressDialog pDialog;
     SessionManager session;
     SQLiteHandler db;
@@ -64,43 +64,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     ImageView dpView;
     private int PICK_IMAGE_REQUEST = 1;
     String TAG = AccountEdit.class.getSimpleName();
-    EditText etQname, etQid, etAddress, etDescp, etPartNum, etQFee, etAgeTo, etAgeFrom, etDateTo, etDateFrom;
-    TextView submit;
+    EditText etQname, etQid, etAddress, etDescp, etPartNum,
+            etQFee, etAgeTo, etAgeFrom, etDateTo, etDateFrom, etQuiz_descp;
+    TextView submit,winner;
     int flag = 0;
-    Calendar myCalendar = Calendar.getInstance();
-
-    //--------------------------------------UTILITIES---------------------------------------------------------
-    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-            updateLabel();
-        }
-
-    };
-
-    private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        if(flag==0)
-        etDateFrom.setText(sdf.format(myCalendar.getTime()));
-        else if(flag==1)
-            etDateTo.setText(sdf.format(myCalendar.getTime()));
-
-    }
-
-    public boolean isConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-//------------------------------------------------------------------------------------------------------------------------
+    Calendar myCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,12 +84,111 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         etDescp = (EditText) findViewById(R.id.etQuiz_descp);
         etAgeFrom=(EditText)findViewById(R.id.etAge_from);
         etAgeTo=(EditText)findViewById(R.id.etAge_to);
+        etPartNum=(EditText) findViewById(R.id.etQmaxPart);
+        etQFee=(EditText)findViewById(R.id.etQfee);
+        winner=(TextView)findViewById(R.id.winnertxt);
         //etDateTo.setOnClickListener(this) ;
         //etDateFrom.setOnClickListener(this);
         dpView = (ImageView) findViewById(R.id.quizDp);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
-        submit = (TextView) findViewById(R.id.submit);
+        submit = (TextView) findViewById(R.id.submitQuiz);
+        myCalendar = Calendar.getInstance();
+        etDateFrom=(EditText)findViewById(R.id.etQdate_from);
+        etDateTo=(EditText)findViewById(R.id.etQdate_to);
+        //etTimeTo;
+        final EditText etTimeFrom=(EditText)findViewById(R.id.etQTime_from);
+        etTimeFrom.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(CreateEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        etTimeFrom.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+                Toast.makeText(CreateEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+       final EditText etTimeTo=(EditText)findViewById(R.id.etTime_to);
+        etTimeTo.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(CreateEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        etTimeTo.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+                Toast.makeText(CreateEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        final DatePickerDialog.OnDateSetListener datefrom = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabelDateFrom();
+            }
+
+        };
+        final DatePickerDialog.OnDateSetListener dateto = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabelDateTo();
+            }
+
+        };
+        etDateTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(CreateEventActivity.this, dateto, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+        etDateFrom.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(CreateEventActivity.this, datefrom, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+        updateLabelDateFrom();
+        updateLabelDateTo();
         //submit.setOnClickListener(this);
         findViewById(R.id.quiz_locater).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,45 +265,80 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         email = user.get("email");
         etQid.setText(uid);
         //----------------------------------------------------------------------------
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String useridQ=session.getUserId();
+                String qTitle=etQname.getText().toString();
+                String qDescp=etDescp.getText().toString();
+                String partnum=etPartNum.getText().toString();
+                String qFrom=etDateFrom.getText().toString()+" "+etTimeFrom.getText().toString();
+                String qTo=etDateTo.getText().toString()+" "+etTimeTo.getText().toString();
+                String address=etAddress.getText().toString();
+                String fee=etQFee.getText().toString();
+                String ageTo=etAgeTo.getText().toString();
+                String ageFrom=etAgeFrom.getText().toString();
+                uploadQuiz(useridQ,qTitle
+                        ,qDescp,
+                        partnum,
+                        qFrom,
+                        qTo,
+                        address,
+                        fee,ageTo,
+                        ageFrom);
+                Toast.makeText(CreateEventActivity.this, session.getUserId()+
+                        etQname.getText().toString()+etDescp.getText().toString()+
+                        etPartNum.getText().toString()+
+                        etDateFrom.getText().toString()+" "+etTimeFrom.getText().toString()
+                        +etDateTo.getText().toString()+" "+etTimeTo.getText().toString()+
+                        etAddress.getText().toString()+
+                        etQFee.getText().toString()+
+                        etAgeTo.getText().toString()+
+                        etAgeFrom.getText().toString(), Toast.LENGTH_LONG).show();
+                String textone=useridQ+" "+
+                        qTitle+" "+qDescp+" "+
+                        partnum+" "+
+                        qFrom+" "+qTo
+                        +" "+
+                        address+" "+
+                        fee+" "+
+                        ageTo+" "+
+                        ageFrom;
+                winner.setText(textone);
+            }
+        });
     }
-//--------------------------------CLICKS AWAY BABY !!!!----------------------------------------------
-    @Override
-    public void onClick(View v) {
-        String qname, qid;
-
-        qname = etQname.getText().toString().trim();
-
-        // Progress dialog
-        switch (v.getId()) {
-            case R.id.submit:
-                if(!isConnected())
-                {
-                    Toast.makeText(getApplicationContext(),"Not Connected to the Internet!",Toast.LENGTH_SHORT).show();
-                    break;
-                }
-               // uploadQuiz();
-                 break;
-            case R.id.etQdate_from: flag=0;
-                new DatePickerDialog(CreateEventActivity.this, date, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                break;
-            case R.id.etQdate_to:flag=1;
-                new DatePickerDialog(CreateEventActivity.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                break;
+//--------------------------------------UTILITIES---------------------------------------------------------
 
 
+    private void updateLabelDateFrom() {
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        }
-
-
+        etDateFrom.setText(sdf.format(myCalendar.getTime()));
+        Toast.makeText(this, etDateFrom.getText(), Toast.LENGTH_SHORT).show();
     }
+    private void updateLabelDateTo() {
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        etDateTo.setText(sdf.format(myCalendar.getTime()));
+        Toast.makeText(this, etDateTo.getText(), Toast.LENGTH_SHORT).show();
+    }
+    public boolean isConnected() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+//------------------------------------------------------------------------------------------------------------------------
+
     //----------------------------------------------------------------------------------
 
-    private void uploadQuiz(final String uid, final Bitmap dp,
-                        final String password, final String dob, final String country, final String state, final String city, final String fname, final String lname) {
+    private void uploadQuiz(final String uid, final String title, final String description,
+                            final String partc_count, final String date_from,
+                            final String date_to,final String address,final String price,
+                            final String age_range_to, final String age_range_from) {
         // Tag used to cancel the request
         String tag_string_req = "req_quizmake";
 
@@ -244,15 +346,15 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         showDialog();
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_ACCOUNT, new Response.Listener<String>() {
+                AppConfig.URL_CREATE_QUIZ, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Edit Response: " + response.toString());
                 hideDialog();
-
+                JSONObject jObj=null;
                 try {
-                    JSONObject jObj = new JSONObject(response);
+                    jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
 
@@ -270,7 +372,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                         // message
                         String errorMsg = jObj.getString("error_msg");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                                "Errir in else"+errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -283,7 +385,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        "Toast"+error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -292,15 +394,29 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("pro_pic", getStringImage(scaleDown(dp, 800, true)));
-                params.put("password", password);
-                params.put("dob", dob);
-                params.put("country", country);
-                params.put("state", state);
-                params.put("city", city);
-                params.put("first_name", fname);
-                params.put("last_name", lname);
+                params.put("title", title);
+                params.put("description", description);
+                //params.put("category", dob);
+                params.put("participant_count_max", partc_count);
+                params.put("datetime_from", date_from);
+                params.put("datetime_to", date_to);
+                params.put("address", address);
+                params.put("price", price);
+                params.put("age_range_to", age_range_to);
+                params.put("age_range_from", age_range_from);
                 params.put("user_id", uid);
+                params.put("category","Cars");
+                params.put("level","Local");
+                params.put("gps","0");
+                params.put("state","Gurgaon");
+                params.put("city","Gurgaon");
+                params.put("prizes","20");
+                params.put("cplarge","");
+                params.put("cpsmall","");
+                params.put("maps_link","");
+
+
+
                 return params;
             }
 
@@ -322,7 +438,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
 
     private void logoutUser() {
-        session.setLogin(false);
+        session.setLogin(false,null);
 
         db.deleteUsers();
 

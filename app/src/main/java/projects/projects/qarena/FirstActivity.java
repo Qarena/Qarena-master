@@ -5,12 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,15 +119,16 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                     if (!error) {
                         // user successfully logged in
                         // Create login session
-                        session.setLogin(true);
                         // Now store the user in SQLite
                         String uid = jObj.getString("user_id");
                         JSONObject user = jObj.getJSONObject("user");
                         String email = user.getString("email");
                         String password = user.getString("password");
-
+                        String user_id=jObj.getString("user_id");
+                        Toast.makeText(FirstActivity.this, "The user id is"+user_id, Toast.LENGTH_SHORT).show();
                         // Inserting row in users table
-                        db.addUser(uid, email, password);
+                        //db.addUser(uid, email, password);
+                        session.setLogin(true, user_id);
 
                         // Launch main activity
                         Intent intent = new Intent(FirstActivity.this,
