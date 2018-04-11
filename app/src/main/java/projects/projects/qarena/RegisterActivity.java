@@ -19,7 +19,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
@@ -162,7 +164,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 Toast.makeText(getApplicationContext(), "Not connected to the internet!", Toast.LENGTH_SHORT).show();
             } else {
 
-                registerUser(uid, email, password, dob, country, state, city, fname, lname);
+                registerUser(uid, email, password, dob, country, state, city, fname, lname, dp);
             }
 
         }
@@ -174,35 +176,30 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
      * email, password) to register url
      */
     private void registerUser(final String uid, final String email,
-                              final String password, final String dob, final String country, final String state, final String city, final String fname, final String lname) {
+                              final String password, final String dob, final String country,
+                              final String state,
+                              final String city, final String fname,
+                              final String lname,final Bitmap bitmap) {
         // Tag used to cancel the request
         String tag_string_req = "req_register";
 
         pDialog.setMessage("Registering ...");
         showDialog();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        dp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] imageBytes = baos.toByteArray();
-
-        final String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        // System.out.println("BABE:  " + encodedImage);
-        
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_REGISTER, new Response.Listener<String>() {
-
+        VolleyMultipartRequest volleyMultipartRequest=new VolleyMultipartRequest(Request.Method.POST,
+                AppConfig.URL_REGISTER, new Response.Listener<NetworkResponse>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(NetworkResponse response) {
                 Log.d(TAG, "Register Response: " + response.toString());
                 hideDialog();
 
                 try {
-                    JSONObject jObj = new JSONObject(response);
+                    JSONObject jObj = new JSONObject(new String(response.data));
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
                         // User successfully stored in MySQL
                         // Now store the user in sqlite
 
-                        /*JSONObject user = jObj.getJSONObject("formdata");
+                        JSONObject user = jObj.getJSONObject("formdata");
                         String email = user.getString("email");
                         String uid = user.getString("user_id");
                         String password = user.getString("password");
@@ -214,7 +211,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         String lastname = user.getString("last_name");
 
                         //Inserting row in users table
-                        db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);*/
+                        db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);
 
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
@@ -238,7 +235,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
@@ -247,13 +243,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 hideDialog();
             }
         }) {
-
             @Override
-            protected Map<String, String> getParams() {
-
+            protected Map<String, String> getParams() throws AuthFailureError {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("pro_pic", encodedImage);
                 params.put("user_id", uid);
                 params.put("email", email);
                 params.put("password", password);
@@ -267,11 +260,20 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 return params;
             }
 
-        };{
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String,DataPart> params=new HashMap<>();
+                long imagename =System.currentTimeMillis();
+                params.put("pro_pic",new DataPart(imagename+".png",getFileDataFromDrawable(bitmap)));
+                return params;
+
+            }
+        };
+        {
             int socketTimeout = 30000;
             RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-            strReq.setRetryPolicy(policy);
-            AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+            volleyMultipartRequest.setRetryPolicy(policy);
+            AppController.getInstance().addToRequestQueue(volleyMultipartRequest, tag_string_req);
         }
 
         // Adding request to request queue
@@ -326,6 +328,11 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+    }
+    public  byte[] getFileDataFromDrawable(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,80,byteArrayOutputStream);
+        return  byteArrayOutputStream.toByteArray();
     }
 
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,

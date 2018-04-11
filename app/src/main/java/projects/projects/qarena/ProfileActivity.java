@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity  {
     String user_id;
     private TextView sortOption;
     private String city = "Kolkata";
+    RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ratingBar=(RatingBar)findViewById(R.id.ratingbar);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
@@ -330,6 +334,9 @@ public class ProfileActivity extends AppCompatActivity  {
                     tvPoints.setText("Points :  "+jsonObject.getString("points"));
                     tvLocation.setText(jsonObject.getString("city")+" | "
                          +jsonObject.getString("current_state")+" | "+jsonObject.getString("country"));
+                    String url="http://35.198.203.61/utilities/image?file_name="+jsonObject.getString("pro_pic");
+                    Glide.with(ProfileActivity.this).load(url).into(proPic);
+                    ratingBar.setRating(Float.parseFloat(jsonObject.getString("rating")));
 
                 } catch (JSONException e) {
                     e.printStackTrace();

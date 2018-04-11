@@ -64,7 +64,7 @@
                 android:textColor="#f2b6f1"
                 android:textSize="18sp" />
             <RatingBar
-                android:rating="3.5"
+                android:id="@+id/ratingbar"
                 android:stepSize="0.5"
                 style="?android:attr/ratingBarStyleSmall"
                 android:numStars="5"
