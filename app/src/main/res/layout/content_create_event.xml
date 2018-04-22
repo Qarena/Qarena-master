@@ -11,8 +11,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#6d3d6c"
+            android:layout_height="wrap_content"
+            android:background="#85384C"
             android:orientation="vertical">
 
 
@@ -53,8 +53,7 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#923d91">
+                android:layout_marginTop="8dp">
 
 
 
@@ -63,13 +62,14 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="quiz name"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <EditText
@@ -90,21 +90,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#8a3589">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="participation cost"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
                     <EditText
                         android:id="@+id/etQfee"
@@ -123,21 +123,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#873586">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="age group"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <LinearLayout
@@ -179,20 +179,20 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#783077">
+                android:layout_marginTop="8dp">
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="max participants"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <EditText
@@ -213,21 +213,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#712870">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="category"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp"
                     android:layout_gravity="center">
 
@@ -249,8 +249,7 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#662065">
+                android:layout_marginTop="8dp">
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
@@ -262,7 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <Spinner
@@ -282,21 +281,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#611960">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="mode"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <Spinner
@@ -316,21 +315,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#561255">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="address"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <RelativeLayout
@@ -358,7 +357,8 @@
                             android:layout_alignParentRight="true"
                             android:layout_gravity="center_horizontal"
                             android:src="@drawable/ic_location_on_black_24dp"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            android:background="@android:color/transparent" />
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
             </LinearLayout>
@@ -369,21 +369,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#480b47">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="quiz date"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
             <LinearLayout
@@ -432,21 +432,21 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:background="#480b47">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="quiz Time"
+                    android:text="quiz time"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
                     <LinearLayout
@@ -495,7 +495,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:background="#380737"
                 android:layout_gravity="center">
 
                 <TextView
@@ -503,6 +502,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="description"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:layout_gravity="center" />
 
@@ -510,7 +510,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="#dfd2df"
+                    app:cardBackgroundColor="#be7d8e"
                     app:cardCornerRadius="16dp">
 
             <EditText
@@ -529,7 +529,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:background="#380537"
                 android:gravity="center">
             <TableLayout
                 android:layout_width="wrap_content"
@@ -670,11 +669,12 @@
                 android:id="@+id/submitQuiz"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="#370436"
+                android:background="@android:color/background_light"
                 android:gravity="center"
-                android:text="LETS GO!"
+                android:text="Create Quiz"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/tertiary_text_dark"
                 android:textSize="16sp" />
 
         </LinearLayout>
