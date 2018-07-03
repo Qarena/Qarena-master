@@ -16,6 +16,12 @@
         android:gravity="center_vertical"
         android:padding="8dp">
 
+        <Button
+            android:layout_width="103dp"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            android:onClick="upload"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_pic"
             android:layout_width="110dp"
@@ -160,4 +166,5 @@
             android:layout_height="match_parent"
             android:layout_below="@id/sort_option" />
     </RelativeLayout>
+
 </LinearLayout>

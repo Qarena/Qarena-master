@@ -33,6 +33,7 @@ Change Log: added register buttons
 added the login feature using Volley
 * */
 public class FirstActivity extends AppCompatActivity implements View.OnClickListener{
+
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteHandler db;
@@ -50,14 +51,17 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+
         TextView signup = (TextView) findViewById(R.id.register);
         signup.setOnClickListener(this);
         TextView login = (TextView) findViewById(R.id.login);
         login.setOnClickListener(this);
         email=(EditText)findViewById(R.id.email);
         password=(EditText)findViewById(R.id.password);
+
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
+
         db = new SQLiteHandler(getApplicationContext());
 
         // Session manager

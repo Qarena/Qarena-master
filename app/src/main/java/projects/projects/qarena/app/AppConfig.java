@@ -11,7 +11,7 @@ public class AppConfig {
 
     // Server user register url
     public static String URL_REGISTER = "http://35.198.203.61/utilities/register_user";
-    public static final String UPLOAD_URL = URL_REGISTER + "uploadpic";
+    public static final String UPLOAD_URL = URL_REGISTER + "/uploadpic";
     public static final String GET_PICS_URL = URL_REGISTER + "getpics";
     // Server user notification handling url
     public static String URL_NOTIFICATIONS = " https://qufinder.000webhostapp.com//notifications.php";
