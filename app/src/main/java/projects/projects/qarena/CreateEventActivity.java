@@ -72,12 +72,12 @@ public class CreateEventActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("hiiiii");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        System.out.println("hiiiii");
+
         etQid = (EditText) findViewById(R.id.etQid);
         etQname = (EditText) findViewById(R.id.etQname);
         etAddress = (EditText) findViewById(R.id.etQuiz_address);
@@ -87,22 +87,24 @@ public class CreateEventActivity extends AppCompatActivity  {
         etPartNum=(EditText) findViewById(R.id.etQmaxPart);
         etQFee=(EditText)findViewById(R.id.etQfee);
         winner=(TextView)findViewById(R.id.winnertxt);
+
         //etDateTo.setOnClickListener(this) ;
         //etDateFrom.setOnClickListener(this);
         dpView = (ImageView) findViewById(R.id.quizDp);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
+
         submit = (TextView) findViewById(R.id.submitQuiz);
         myCalendar = Calendar.getInstance();
         etDateFrom=(EditText)findViewById(R.id.etQdate_from);
         etDateTo=(EditText)findViewById(R.id.etQdate_to);
         //etTimeTo;
+
         final EditText etTimeFrom=(EditText)findViewById(R.id.etQTime_from);
         etTimeFrom.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -116,16 +118,14 @@ public class CreateEventActivity extends AppCompatActivity  {
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-                Toast.makeText(CreateEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(CreateEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
        final EditText etTimeTo=(EditText)findViewById(R.id.etTime_to);
         etTimeTo.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -139,16 +139,15 @@ public class CreateEventActivity extends AppCompatActivity  {
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-                Toast.makeText(CreateEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(CreateEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
         final DatePickerDialog.OnDateSetListener datefrom = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -156,12 +155,12 @@ public class CreateEventActivity extends AppCompatActivity  {
             }
 
         };
+
         final DatePickerDialog.OnDateSetListener dateto = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -169,6 +168,7 @@ public class CreateEventActivity extends AppCompatActivity  {
             }
 
         };
+
         etDateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,6 +177,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
         etDateFrom.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -187,8 +188,10 @@ public class CreateEventActivity extends AppCompatActivity  {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
         updateLabelDateFrom();
         updateLabelDateTo();
+
         //submit.setOnClickListener(this);
         findViewById(R.id.quiz_locater).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,12 +205,14 @@ public class CreateEventActivity extends AppCompatActivity  {
                 }
             }
         });
+
         dpView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showFileChooser();
             }
         });
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.getMenu().findItem(R.id.item4).setVisible(false);
         navigationView.getMenu().findItem(R.id.item5).setVisible(false);
@@ -229,12 +234,13 @@ public class CreateEventActivity extends AppCompatActivity  {
                         break;
                     case R.id.item4:
                         break;
-                    case R.id.item5:
-                        break;
+                    /*case R.id.item5:
+                        break;*/
                 }
                 return true;
             }
         });
+
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -250,16 +256,20 @@ public class CreateEventActivity extends AppCompatActivity  {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-    //-----------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------
         // Session manager
         session = new SessionManager(getApplicationContext());
+
         // SQLite database handler
         db = new SQLiteHandler(getApplicationContext());
+
         // session manager checks is user is logged in or not
         session = new SessionManager(getApplicationContext());
         if (!session.isLoggedIn()) {
             logoutUser();
         }
+
         HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");
         email = user.get("email");
@@ -279,6 +289,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 String fee=etQFee.getText().toString();
                 String ageTo=etAgeTo.getText().toString();
                 String ageFrom=etAgeFrom.getText().toString();
+
                 uploadQuiz(useridQ,qTitle
                         ,qDescp,
                         partnum,
@@ -287,7 +298,8 @@ public class CreateEventActivity extends AppCompatActivity  {
                         address,
                         fee,ageTo,
                         ageFrom);
-                Toast.makeText(CreateEventActivity.this, session.getUserId()+
+
+                /*Toast.makeText(CreateEventActivity.this, session.getUserId()+
                         etQname.getText().toString()+etDescp.getText().toString()+
                         etPartNum.getText().toString()+
                         etDateFrom.getText().toString()+" "+etTimeFrom.getText().toString()
@@ -295,7 +307,8 @@ public class CreateEventActivity extends AppCompatActivity  {
                         etAddress.getText().toString()+
                         etQFee.getText().toString()+
                         etAgeTo.getText().toString()+
-                        etAgeFrom.getText().toString(), Toast.LENGTH_LONG).show();
+                        etAgeFrom.getText().toString(), Toast.LENGTH_LONG).show();*/
+
                 String textone=useridQ+" "+
                         qTitle+" "+qDescp+" "+
                         partnum+" "+
@@ -305,12 +318,12 @@ public class CreateEventActivity extends AppCompatActivity  {
                         fee+" "+
                         ageTo+" "+
                         ageFrom;
+
                 winner.setText(textone);
             }
         });
     }
 //--------------------------------------UTILITIES---------------------------------------------------------
-
 
     private void updateLabelDateFrom() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here
@@ -319,6 +332,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         etDateFrom.setText(sdf.format(myCalendar.getTime()));
         Toast.makeText(this, etDateFrom.getText(), Toast.LENGTH_SHORT).show();
     }
+
     private void updateLabelDateTo() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -326,6 +340,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         etDateTo.setText(sdf.format(myCalendar.getTime()));
         Toast.makeText(this, etDateTo.getText(), Toast.LENGTH_SHORT).show();
     }
+
     public boolean isConnected() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -333,12 +348,11 @@ public class CreateEventActivity extends AppCompatActivity  {
     }
 //------------------------------------------------------------------------------------------------------------------------
 
-    //----------------------------------------------------------------------------------
-
     private void uploadQuiz(final String uid, final String title, final String description,
                             final String partc_count, final String date_from,
                             final String date_to,final String address,final String price,
                             final String age_range_to, final String age_range_from) {
+
         // Tag used to cancel the request
         String tag_string_req = "req_quizmake";
 
@@ -352,48 +366,47 @@ public class CreateEventActivity extends AppCompatActivity  {
             public void onResponse(String response) {
                 Log.d(TAG, "Edit Response: " + response.toString());
                 hideDialog();
-                JSONObject jObj=null;
+
+                JSONObject jObj;
                 try {
                     jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
-                    if (!error) {
 
+                    if (!error) {
                         // JSONObject user = jObj.getJSONObject("user");
-                        Toast.makeText(getApplicationContext(), "User successfully updated your account", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "User successfully updated your
+                        // account", Toast.LENGTH_LONG).show();
+
                         // Launch login activity
                         Intent intent = new Intent(
                                 CreateEventActivity.this,
                                 FirstActivity.class);
                         startActivity(intent);
                         finish();
-                    } else {
 
-                        // Error occurred in registration. Get the error
-                        // message
+                    } else {
+                        // Error occurred in registration. Get the error message
                         String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                "Errir in else"+errorMsg, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),"Errir in else"+errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        "Toast"+error.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),"Toast"+error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
-
             @Override
             protected Map<String, String> getParams() {
+
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
+
                 params.put("title", title);
                 params.put("description", description);
                 //params.put("category", dob);
@@ -415,15 +428,12 @@ public class CreateEventActivity extends AppCompatActivity  {
                 params.put("cpsmall","");
                 params.put("maps_link","");
 
-
-
                 return params;
             }
-
         };
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);//
     }
 
     private void showDialog() {
@@ -436,7 +446,6 @@ public class CreateEventActivity extends AppCompatActivity  {
             pDialog.dismiss();
     }
 
-
     private void logoutUser() {
         session.setLogin(false,null);
 
@@ -448,17 +457,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         finish();
     }
 
-
     //--------------IMAGE UPLOAD---------------------------------------------------------------------
-
-    public String getStringImage(Bitmap bmp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
-        return encodedImage;
-    }
 
     private void showFileChooser() {
         Intent intent = new Intent();
@@ -466,7 +465,6 @@ public class CreateEventActivity extends AppCompatActivity  {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -484,6 +482,16 @@ public class CreateEventActivity extends AppCompatActivity  {
             }
         }
     }
+
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        return encodedImage;
+    }
+
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
                                    boolean filter) {
         float ratio = Math.min(
@@ -496,9 +504,8 @@ public class CreateEventActivity extends AppCompatActivity  {
                 height, filter);
         return newBitmap;
     }
-//-----------------------------------------ONLINE STUFF--------------------------------------------------
 
-
+    //-----------------------------------------ONLINE STUFF--------------------------------------------------
 
 }
 

@@ -26,7 +26,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -67,10 +66,13 @@ public class QuizzesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quizzes);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         //------------------------SESSION---------------------
         db = new SQLiteHandler(getApplicationContext());
+
         // session manager checks is user is logged in or not
         session = new SessionManager(getApplicationContext());
         if (!session.isLoggedIn()) {
@@ -125,7 +127,6 @@ public class QuizzesActivity extends AppCompatActivity {
         });
 
 
-
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabQuiz);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,12 +162,13 @@ public class QuizzesActivity extends AppCompatActivity {
                     case R.id.item4:
                         logoutUser();
                         break;
-                    case R.id.item5:
-                        break;
+                    /*case R.id.item5:
+                        break;*/
                 }
                 return true;
             }
         });
+
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -192,6 +194,7 @@ public class QuizzesActivity extends AppCompatActivity {
 
         final RequestQueue requestQueue = VolleySingleton.getRequestQueue(this);
         requestQueue.start();
+
         StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_SearchQuiz,
                 new Response.Listener<String>() {
                     @Override
@@ -202,9 +205,11 @@ public class QuizzesActivity extends AppCompatActivity {
 
                         try {
                             JSONArray results = (new JSONObject(response)).getJSONArray("results");
+
                             for (int i = 0; i < results.length(); i++) {
                                 JSONObject obj = results.getJSONObject(i);
                                 QuizEntity quiz = new QuizEntity();
+
                                 quiz.title = obj.getString("title");
                                 quiz.age_res = obj.getString("age_range_from") + " to " + obj.getString("age_range_to") + " Years";
                                 quiz.category = obj.getString("category");
@@ -221,13 +226,16 @@ public class QuizzesActivity extends AppCompatActivity {
                                 quiz.time_to = getDate(obj.getString("datetime_from"));
                                 quiz.time_from = getDate(obj.getString("datetime_to"));
                                 quiz.prize = obj.getString("prizes");
+
                                 quizzes.add(quiz);
                             }
-                            adapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();//
+
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            adapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();//
                         }
+                        //adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -235,9 +243,10 @@ public class QuizzesActivity extends AppCompatActivity {
                 requestQueue.stop();
                 dialog.dismiss();
             }
-        }) {
+        })
+        {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("city", city);
                 params.put("datetime_from", "2017-01-01 00:00");
@@ -247,14 +256,17 @@ public class QuizzesActivity extends AppCompatActivity {
         };
         requestQueue.add(request);
     }
+
     private String getDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date testDate = null;
+
         try {
             testDate = sdf.parse(date);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMM hh:mm a");
         String newFormat = formatter.format(testDate);
         return newFormat;
@@ -282,12 +294,14 @@ public class QuizzesActivity extends AppCompatActivity {
             Context context = QuizzesActivity.this;
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             View layout = inflater.inflate(R.layout.quiz_page, container, false);
+
             layout.findViewById(R.id.right).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     viewPager.setCurrentItem((viewPager.getCurrentItem() + 1) % quizzes.size());
                 }
             });
+
             layout.findViewById(R.id.left).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -304,6 +318,7 @@ public class QuizzesActivity extends AppCompatActivity {
             ((TextView) layout.findViewById(R.id.quiz_time_to)).setText(quizzes.get(position).time_to);
             ((TextView) layout.findViewById(R.id.quiz_category)).setText(quizzes.get(position).category);
             ((TextView) layout.findViewById(R.id.quiz_level)).setText(quizzes.get(position).level);
+
             if (quizzes.get(position).status != 2)
                 ((ImageButton) layout.findViewById(R.id.btStatus)).setImageResource(R.drawable.ic_isonline_true);
 
@@ -333,12 +348,14 @@ public class QuizzesActivity extends AppCompatActivity {
                             dialog.dismiss();
                         }
                     });
+
                     ((TextView) dialog.findViewById(R.id.more_info_prize_1)).setText(quizzes.get(position).prize.split(";")[0]);
                     ((TextView) dialog.findViewById(R.id.more_info_prize_2)).setText(quizzes.get(position).prize.split(";")[1]);
                     ((TextView) dialog.findViewById(R.id.more_info_prize_3)).setText(quizzes.get(position).prize.split(";")[2]);
                     ((TextView) dialog.findViewById(R.id.more_info_age)).setText(quizzes.get(position).age_res);
                 }
             });
+
             //register button
             layout.findViewById(R.id.quiz_register).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -352,9 +369,11 @@ public class QuizzesActivity extends AppCompatActivity {
             });
 
             Log.d("pic url", quizzes.get(position).picUrl);
+
             Glide.with(QuizzesActivity.this)
                     .load(quizzes.get(position).picUrl).centerCrop()
                     .into((ImageView) layout.findViewById(R.id.quiz_pic));
+
             layout.findViewById(R.id.quiz_locate).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -389,10 +408,8 @@ public class QuizzesActivity extends AppCompatActivity {
 
     public void showPrizes() {
         DialogFragment newFragment = new DialogBoxWithStuff();
-
-        newFragment.show(getFragmentManager(), "PRIZES");  //.show(getSupportFragmentManager(), "missiles");
+        newFragment.show(getFragmentManager(), "PRIZES");//.show(getSupportFragmentManager(), "missiles");
     }
-
 
     //--------------------------------------ONLINE STUFF--------------------------------------------
     private void logoutUser() {

@@ -5,8 +5,8 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "projects.projects.qarena"
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

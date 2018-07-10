@@ -5,7 +5,6 @@ package projects.projects.qarena;
  */
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Network;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -198,12 +197,18 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         private byte[] content;
         private String type;
 
-        public DataPart() {
-        }
+        /*public DataPart() {
+        }*/
 
         DataPart(String name, byte[] data) {
             fileName = name;
             content = data;
+        }
+
+        DataPart(String name, byte[] data, String docType) {
+            fileName = name;
+            content = data;
+            type = docType;
         }
 
         String getFileName() {

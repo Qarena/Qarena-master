@@ -125,13 +125,14 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                         // Create login session
                         // Now store the user in SQLite
                         String uid = jObj.getString("user_id");
+
                         JSONObject user = jObj.getJSONObject("user");
                         String email = user.getString("email");
                         String password = user.getString("password");
+
                         String user_id=jObj.getString("user_id");
-                        Toast.makeText(FirstActivity.this, "The user id is"+user_id, Toast.LENGTH_SHORT).show();
-                        // Inserting row in users table
-                        //db.addUser(uid, email, password);
+                        //Toast.makeText(FirstActivity.this, "The user id is"+user_id, Toast.LENGTH_SHORT).show();
+
                         session.setLogin(true, user_id);
 
                         // Launch main activity
@@ -139,26 +140,24 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                                 ProfileActivity.class);
                         startActivity(intent);
                         finish();
+
                     } else {
                         // Error in login. Get the error message
                         String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     // JSON error
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "JSON error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "JSON error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {

@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -32,36 +31,30 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import projects.projects.qarena.app.AppConfig;
 import projects.projects.qarena.app.AppController;
@@ -69,7 +62,7 @@ import projects.projects.qarena.app.VolleySingleton;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
 
-public class ProfileActivity extends AppCompatActivity  {
+public class ProfileActivity extends AppCompatActivity {
 
     private String jsonResponse;//
     private ProgressDialog pDialog;
@@ -92,6 +85,9 @@ public class ProfileActivity extends AppCompatActivity  {
     RatingBar ratingBar;
 
     private String file_1;
+    public static final int REQUEST_EXTERNAL_PERMISSION_CODE = 666;
+    private byte[] bytes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity  {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ratingBar=(RatingBar)findViewById(R.id.ratingbar);
+        ratingBar = (RatingBar) findViewById(R.id.ratingbar);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
@@ -146,7 +142,7 @@ public class ProfileActivity extends AppCompatActivity  {
         if (!session.isLoggedIn()) {
             logoutUser();
         }
-        user_id= session.getUserId();
+        user_id = session.getUserId();
         //Toast.makeText(this, "The saved user id"+user_id, Toast.LENGTH_SHORT).show();
         HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");
@@ -159,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity  {
         ir.get(imageUrl, new com.android.volley.toolbox.ImageLoader.ImageListener() {
             @Override
             public void onResponse(com.android.volley.toolbox.ImageLoader.ImageContainer response, boolean isImmediate) {
-               // proPic.setImageBitmap(response.getBitmap());
+                // proPic.setImageBitmap(response.getBitmap());
             }
 
             @Override
@@ -177,11 +173,11 @@ public class ProfileActivity extends AppCompatActivity  {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.item1:
-                        startActivity(new Intent(ProfileActivity.this,ProfileActivity.class));
+                        startActivity(new Intent(ProfileActivity.this, ProfileActivity.class));
                         finish();
                         break;
                     case R.id.item2:
-                        startActivity(new Intent(ProfileActivity.this,QuizzesActivity.class));
+                        startActivity(new Intent(ProfileActivity.this, QuizzesActivity.class));
                         finish();
                         break;
                     case R.id.item3:
@@ -268,7 +264,7 @@ public class ProfileActivity extends AppCompatActivity  {
     }
 
     private void logoutUser() {
-        session.setLogin(false,null);
+        session.setLogin(false, null);
 
         db.deleteUsers();
 
@@ -278,7 +274,7 @@ public class ProfileActivity extends AppCompatActivity  {
         finish();
     }
 
-    private void loadQuiz(final String city){
+    private void loadQuiz(final String city) {
         String tag_string_quiz = "req_quiz";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -289,13 +285,13 @@ public class ProfileActivity extends AppCompatActivity  {
                 Log.d(TAG, "Loading Response: " + response.toString());
                 hideDialog();
                 //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
-                JSONArray quizArray=null;
+                JSONArray quizArray = null;
                 try {
-                    dataModelArrayList=new ArrayList<>();
-                    quizArray=new JSONArray(response);
-                    for (int i=0;i<quizArray.length();i++){
-                        JSONObject quizDetail=quizArray.getJSONObject(i);
-                        QuizEntity quizEntity=new QuizEntity();
+                    dataModelArrayList = new ArrayList<>();
+                    quizArray = new JSONArray(response);
+                    for (int i = 0; i < quizArray.length(); i++) {
+                        JSONObject quizDetail = quizArray.getJSONObject(i);
+                        QuizEntity quizEntity = new QuizEntity();
                         quizEntity.setTitle(quizDetail.getString("title"));
                         //Toast.makeText(ProfileActivity.this,quizDetail.getString("title") , Toast.LENGTH_SHORT).show();
                         quizEntity.setDescription(quizDetail.getString("description"));
@@ -309,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity  {
                 //Toast.makeText(ProfileActivity.this, dataModelArrayList.toString(), Toast.LENGTH_SHORT).show();
                 quizRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
-                adapter = new ProfileQuizRecyclerAdapter(ProfileActivity.this,dataModelArrayList);
+                adapter = new ProfileQuizRecyclerAdapter(ProfileActivity.this, dataModelArrayList);
                 quizRecycler.setAdapter(adapter);
             }
         }, new Response.ErrorListener() {
@@ -335,6 +331,7 @@ public class ProfileActivity extends AppCompatActivity  {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(stringRequest, tag_string_quiz);
     }
+
     private void loadProfile(final String uid) {
         // Tag used to cancel the request
         String tag_string_req = "req_profile";
@@ -352,20 +349,19 @@ public class ProfileActivity extends AppCompatActivity  {
                 JSONObject jsonObject = null;
                 try {
                     jsonObject = new JSONObject(response);
-                    tvName.setText(jsonObject.getString("first_name")+"  "
-                            +jsonObject.getString("last_name"));
+                    tvName.setText(jsonObject.getString("first_name") + "  "
+                            + jsonObject.getString("last_name"));
                     tvEmail.setText(jsonObject.getString("email"));
-                    tvPoints.setText("Points :  "+jsonObject.getString("points"));
-                    tvLocation.setText(jsonObject.getString("city")+" | "
-                         +jsonObject.getString("current_state")+" | "+jsonObject.getString("country"));
-                    String url="http://35.198.203.61/utilities/image?file_name="+jsonObject.getString("pro_pic");
+                    tvPoints.setText("Points :  " + jsonObject.getString("points"));
+                    tvLocation.setText(jsonObject.getString("city") + " | "
+                            + jsonObject.getString("current_state") + " | " + jsonObject.getString("country"));
+                    String url = "http://35.198.203.61/utilities/image?file_name=" + jsonObject.getString("pro_pic");
                     Glide.with(ProfileActivity.this).load(url).into(proPic);
                     ratingBar.setRating(Float.parseFloat(jsonObject.getString("rating")));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
 
             }
@@ -478,132 +474,199 @@ public class ProfileActivity extends AppCompatActivity  {
     }
 
 
-    public void upload(View v){
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");//TODO restrict to ppt or pdf only... application/ppt,application/pdf
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+    public void upload(View v) {
+        //Log.d(TAG, String.valueOf(checkExternalStoragePermission(this)));
+
+        //showFileChooser
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        intent.setType("application/pdf");//TODO restrict to ppt or pdf only... application/ppt, application/pdf
+        intent.addCategory(Intent.CATEGORY_OPENABLE);//
 
         try {
             startActivityForResult(
-                    Intent.createChooser(intent, "Select a File to Upload"),
-                    1);
+                    Intent.createChooser(intent, "Select a quiz pdf/ppt to upload"),
+                    1);//
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, "Please install a File Manager.",
                     Toast.LENGTH_SHORT).show();
         }
     }
 
+    /*@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public static final String[] PERMISSIONS_EXTERNAL_STORAGE = {
+            READ_EXTERNAL_STORAGE
+    };
+
+    public boolean checkExternalStoragePermission(Activity activity) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            return true;
+        }
+
+        int readStoragePermissionState = ContextCompat.checkSelfPermission(activity, READ_EXTERNAL_STORAGE);
+        //int writeStoragePermissionState = ContextCompat.checkSelfPermission(activity,WRITE_EXTERNAL_STORAGE);
+        boolean externalStoragePermissionGranted = readStoragePermissionState == PackageManager.PERMISSION_GRANTED;
+        if (!externalStoragePermissionGranted) {
+            requestPermissions(PERMISSIONS_EXTERNAL_STORAGE, REQUEST_EXTERNAL_PERMISSION_CODE);
+        }
+
+        return externalStoragePermissionGranted;
+    }*/
+
+
+    /*private String readFile(File file) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        } finally {
+            br.close();
+        }
+    }*/
+
+
+    /**
+     * Method used for encode the file to base64 binary format
+     *
+     * @param file
+     * @return encoded file format
+     */
+    private String encodeFileToBase64Binary(File file) {
+        String encodedfile = null;
+        try {
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+            bytes = new byte[(int) file.length()];
+            fileInputStreamReader.read(bytes);
+            encodedfile = Base64.encodeBase64(bytes).toString();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return encodedfile;
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == Activity.RESULT_OK && requestCode == 1 && data != null && data.getData() != null) {
+            Uri selectedFileURI = data.getData();
 
-                Uri selectedFileURI = data.getData();
+            //String path = data.getData().getPath();//useless
 
-
-                //InputStream is = getContentResolver().openInputStream(selectedFileURI);
-
-
-                final String docFilePath = getFileNameByUri(this, selectedFileURI);
-
-
-                /*final String selectedFilePath = FilePath.getPath(this,selectedFileURI);
-                Log.i(TAG,"Selected File Path:" + selectedFilePath);*/
-                /*if(selectedFilePath != null && !selectedFilePath.equals("")){
-                    tvFileName.setText(selectedFilePath);
-                }else{
-                    Toast.makeText(this,"Cannot upload file to server",Toast.LENGTH_SHORT).show();
-                }*/
+            final String filePath = getFileNameByUri(getApplicationContext(), selectedFileURI);
+            //String path3 = FilePath.getPath(getApplicationContext(), selectedFileURI);//same as
+            // the above
 
 
-                File file = new File(selectedFileURI.getPath().toString());
-                Log.d("akash", "File : " + file.getName());
-
-                String uploadedFileName = file.getName().toString();
-                StringTokenizer tokens = new StringTokenizer(uploadedFileName, ":");
-                Log.d("akash", "tokens : " + tokens);
-
-                /*String first = tokens.nextToken();
-                Log.d("akash", "first : " + first);*/
-
-                file_1 = tokens.nextToken().trim();
-                Log.d("akash", "file_1 : " + file_1);//
-                //txt_file_name_1.setText(file_1);
+            /*File file = new File(selectedFileURI.getPath().toString());
+            Log.d("", "File : " + file.getName());
+            uploadedFileName = file.getName().toString();
+            tokens = new StringTokenizer(uploadedFileName, ":");
+            first = tokens.nextToken();
+            file_1 = tokens.nextToken().trim();*/
 
 
-                //do the network call here on a new thread instead of the async task...
-                pDialog = new ProgressDialog(ProfileActivity.this);
-                pDialog.setCancelable(false);
-                pDialog.setMessage("Please wait ...");
-                showDialog();
-
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            URL url = new URL(AppConfig.UPLOAD_URL);//TODO change to
-                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                            conn.setReadTimeout(10000);
-                            conn.setConnectTimeout(15000);
-                            conn.setRequestMethod("POST");
-                            conn.setUseCaches(false);
-                            conn.setDoInput(true);
-                            conn.setDoOutput(true);
-
-                            File file1 = new File(Environment.getExternalStorageDirectory(),
-                                    docFilePath);
-
-                            FileBody fileBody1 = new FileBody(file1);
-
-                            MultipartEntity reqEntity = new MultipartEntity(
-                                    HttpMultipartMode.BROWSER_COMPATIBLE);
-                            reqEntity.addPart("file1", fileBody1);
-
-                            conn.setRequestProperty("Connection", "Keep-Alive");
-                            conn.addRequestProperty("Content-length", reqEntity.getContentLength()+"");
-                            conn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
-
-                            OutputStream os = conn.getOutputStream();
-                            reqEntity.writeTo(os);
-                            os.close();
-                            conn.connect();
-
-                            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                                readStream(conn.getInputStream());
-                            }
-
-                        } catch (MalformedURLException e) {
-                            Log.e(TAG, "MalformedURLException: " + e.getMessage());
-                        } catch (ProtocolException e) {
-                            Log.e(TAG, "ProtocolException: " + e.getMessage());
-                        } catch (IOException e) {
-                            Log.e(TAG, "IOException: " + e.getMessage());
-                        } catch (NullPointerException e) {
-                            Log.e(TAG, "NullPointerException: " + e.getMessage());
-                        }catch (Exception e) {
-                            Log.e(TAG, "Exception: " + e.getMessage());
-                        }
-                    }
-                }).start();
-
-                hideDialog();
-                //return null;
+            //getContentResolver().get
+            // If file path object is null then showing toast message to move file into internal storage.
+            if (filePath == null) {
+                Toast.makeText(this, "Please move your PDF file to internal storage & try again.", Toast.LENGTH_LONG).show();
             }
+            // If file path is not null then PDF uploading file process will starts.
+                /* else {
+
+                try {*/
+
+            Log.d(TAG, "uri = " + selectedFileURI + "\nfilePath = " + filePath);
+            final File file = new File(filePath);
+            encodeFileToBase64Binary(file);//Permission denied...
+
+            // Tag used to cancel the request
+            String tag_string_upload = "req_upload";
+
+            pDialog = new ProgressDialog(ProfileActivity.this);
+            pDialog.setIndeterminate(true);
+            pDialog.setMessage("Please wait ...");
+            pDialog.show();
+
+
+            VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                    AppConfig.URL_QuizUpload, new Response.Listener<NetworkResponse>() {
+
+                @Override
+                public void onResponse(NetworkResponse response) {
+                    Log.d(TAG, "Quiz Upload Response: " + response.toString());
+                    hideDialog();
+
+                    try {
+                        JSONObject jObj = new JSONObject(new String(response.data));
+                        boolean error = jObj.getBoolean("error");
+                        if (!error) {
+                            // User successfully stored in MySQL
+                            // Now store the user in sqlite
+
+                            /*JSONObject user = jObj.getJSONObject("formdata");
+                            String email = user.getString("email");*/
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Quiz Upload Error: " + error.getMessage());
+                            //requestQueue.stop();
+                            pDialog.dismiss();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("user_id", user_id);
+                    //Log.d(TAG, "user_id = " + user_id);
+                    return params;
+                }
+
+                @Override
+                protected Map<String, VolleyMultipartRequest.DataPart> getByteData() {
+                    Map<String, VolleyMultipartRequest.DataPart> params = new HashMap<>();
+                    params.put("ppt_file", new DataPart(file.getName(), bytes, "application/pdf"));
+                    return params;
+                }
+            };
+            {
+                int socketTimeout = 30000;
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                volleyMultipartRequest.setRetryPolicy(policy);
+                AppController.getInstance().addToRequestQueue(volleyMultipartRequest, tag_string_upload);
+            }// Adding request to request queue
+
+            //requestQueue.add(request);
         }
+    }
 
     // get file path
-    private String getFileNameByUri(Context context, Uri uri)
-    {
+    private String getFileNameByUri(Context context, Uri uri) {
         String filepath = "";//default fileName
         //Uri filePathUri = uri;
         File file;
 
-        if (uri.getScheme().toString().compareTo("content") == 0)
-        {
-            Cursor cursor = context.getContentResolver().query(uri, new String[] { android.provider.MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.ORIENTATION }, null, null, null);
+        if (uri.getScheme().toString().compareTo("content") == 0) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{android.provider.MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.ORIENTATION}, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
             cursor.moveToFirst();
@@ -612,25 +675,16 @@ public class ProfileActivity extends AppCompatActivity  {
             cursor.close();
             filepath = mImagePath;
 
-        }
-        else
-        if (uri.getScheme().compareTo("file") == 0)
-        {
-            try
-            {
+        } else if (uri.getScheme().compareTo("file") == 0) {
+            try {
                 file = new File(new URI(uri.toString()));
                 if (file.exists())
                     filepath = file.getAbsolutePath();
 
-            }
-            catch (URISyntaxException e)
-            {
-                // TODO Auto-generated catch block
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             filepath = uri.getPath();
         }
         return filepath;
@@ -735,7 +789,7 @@ public class ProfileActivity extends AppCompatActivity  {
         }
     }*/
 
-    private static String readStream(InputStream in) {
+    /*private static String readStream(InputStream in) {
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
         try {
@@ -756,5 +810,5 @@ public class ProfileActivity extends AppCompatActivity  {
             }
         }
         return builder.toString();
-    }
+    }*/
 }

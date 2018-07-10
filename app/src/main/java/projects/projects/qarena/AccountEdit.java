@@ -65,6 +65,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
         etEmail=(EditText)findViewById(R.id.etEmail);
         etUid=(EditText)findViewById(R.id.etUid);
         ((ViewGroup) etEmail.getParent()).removeView(etEmail);
@@ -78,15 +79,16 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         etFname = (EditText) findViewById(R.id.etFname);
         etLname = (EditText) findViewById(R.id.etLname);
         dpView = (ImageButton) findViewById(R.id.updateDp);
+
         dpView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showFileChooser();
             }
         });
+
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
-
 
         submit = (Button) findViewById(R.id.submit);
         submit.setOnClickListener(this);
@@ -112,7 +114,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         loadAccount(uid);
 
 
-
         dpView = (ImageButton) findViewById(R.id.updateDp);
         dpView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +121,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 showFileChooser();
             }
         });
+
         ImageLoader ir = VolleySingleton.getInstance().getImageLoader();
         String imageUrl = AppConfig.URL_DP + "//" + uid + ".png";
         ir.get(imageUrl, new com.android.volley.toolbox.ImageLoader.ImageListener() {
@@ -130,7 +132,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Error retrieving image!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Error retrieving image!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -151,7 +153,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
 
             // Progress dialog
 
-
         if (v.getId() == R.id.submit) {
 
             if (password.isEmpty()) {
@@ -165,7 +166,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             if (!isConnected()) {
                 Toast.makeText(getApplicationContext(), "Not connected to the internet!", Toast.LENGTH_SHORT).show();
             } else {
-
                 etUser(uid, dp, password, dob, country, state, city, fname, lname);
             }
 
@@ -178,7 +178,10 @@ public class AccountEdit extends Activity implements View.OnClickListener {
      * email, password) to register url
      */
     private void etUser(final String uid, final Bitmap dp,
-                          final String password, final String dob, final String country, final String state, final String city, final String fname, final String lname) {
+                        final String password, final String dob,
+                        final String country, final String state,
+                        final String city, final String fname, final String lname) {
+
         // Tag used to cancel the request
         String tag_string_req = "req_update";
 
@@ -196,10 +199,11 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 try {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
-                    if (!error) {
 
+                    if (!error) {
                         // JSONObject user = jObj.getJSONObject("user");
                         Toast.makeText(getApplicationContext(), "User successfully updated your account", Toast.LENGTH_LONG).show();
+
                         // Launch login activity
                         Intent intent = new Intent(
                                 AccountEdit.this,
@@ -207,25 +211,20 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                         startActivity(intent);
                         finish();
                     } else {
-
                         // Error occurred in registration. Get the error
                         // message
                         String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -234,6 +233,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
+
                 params.put("pro_pic", getStringImage(scaleDown(dp,800,true)));
                 params.put("password", password);
                 params.put("dob", dob);
@@ -243,11 +243,10 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 params.put("first_name", fname);
                 params.put("last_name", lname);
                 params.put("user_id",uid);
+
                 return params;
             }
-
         };
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
@@ -293,7 +292,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -312,6 +310,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
     }
 
     private void loadAccount(final String uid) {
+
         // Tag used to cancel the request
         String tag_string_req = "req_formprofile";
 
@@ -320,7 +319,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.URL_PROFILE, new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Account Response: " + response.toString());
@@ -329,6 +327,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 try {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
+
                     // Check for error node in json
                     if (!error) {
                         //fetch the person's details
@@ -350,12 +349,11 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 } catch (JSONException e) {
                     // JSON error
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Update Error: " + error.getMessage());
@@ -364,7 +362,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 hideDialog();
             }
         }) {
-
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
@@ -373,9 +370,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 params.put("type", "0");
                 return params;
             }
-
         };
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }

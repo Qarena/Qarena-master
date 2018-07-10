@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -44,13 +43,17 @@ import projects.projects.qarena.helper.SessionManager;
  * Created by Arka Bhowmik on 1/2/2017.
  */
 public class RegisterActivity extends Activity implements View.OnClickListener {
+
     ProgressDialog pDialog;
+
     SessionManager session;
     SQLiteHandler db;
+
     public Bitmap dp;
     ImageButton dpView;
+
     private int PICK_IMAGE_REQUEST = 1;
-    String TAG = RegisterActivity.class.getSimpleName();
+    String TAG = getClass().getSimpleName();
     EditText etEmail, etPassword, etCpassword, etCity, etState, etCountry, etFname, etLname, etUid, etDob;
     Button submit;
 
@@ -75,6 +78,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         etState = (EditText) findViewById(R.id.etState);
         etFname = (EditText) findViewById(R.id.etFname);
         etLname = (EditText) findViewById(R.id.etLname);
+
         dpView = (ImageButton) findViewById(R.id.updateDp);
         dpView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,12 +108,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         });
 
         pDialog = new ProgressDialog(this);
-        pDialog.setCancelable(false);
+        pDialog.setCancelable(false);//?
 
         submit = (Button) findViewById(R.id.submit);
         submit.setOnClickListener(this);
 
         SessionManager session = new SessionManager(getApplicationContext());
+
         db = new SQLiteHandler(getApplicationContext());
 
         // Check if user is already logged in or not
@@ -120,7 +125,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             startActivity(intent);
             finish();
         }
-
     }
 
     @Override
@@ -158,9 +162,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 return;
             }
             if (!isConnected()) {
-                Toast.makeText(getApplicationContext(), "Not connected to the internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Not connected to the internet!", Toast
+                        .LENGTH_SHORT).show();//this.
             } else {
-
                 registerUser(uid, email, password, dob, country, state, city, fname, lname, dp);
             }
 
@@ -177,11 +181,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                               final String state,
                               final String city, final String fname,
                               final String lname,final Bitmap bitmap) {
+
         // Tag used to cancel the request
         String tag_string_req = "req_register";
 
         pDialog.setMessage("Registering ...");
         showDialog();
+
         VolleyMultipartRequest volleyMultipartRequest=new VolleyMultipartRequest(Request.Method.POST,
                 AppConfig.URL_REGISTER, new Response.Listener<NetworkResponse>() {
             @Override
@@ -210,7 +216,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         //Inserting row in users table
                         db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);
 
-                        Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "User successfully registered.Try login now!", Toast.LENGTH_LONG).show();
 
                         // Launch login activity
                         Intent intent = new Intent(
@@ -218,13 +224,12 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                                 FirstActivity.class);
                         startActivity(intent);
                         finish();
-                    } else {
 
+                    } else {
                         // Error occurred in registration. Get the error
                         // message
                         String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -235,13 +240,12 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams(){
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("user_id", uid);
@@ -263,18 +267,49 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 long imagename =System.currentTimeMillis();
                 params.put("pro_pic",new DataPart(imagename+".png",getFileDataFromDrawable(bitmap)));
                 return params;
-
             }
         };
+
         {
             int socketTimeout = 30000;
             RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
             volleyMultipartRequest.setRetryPolicy(policy);
             AppController.getInstance().addToRequestQueue(volleyMultipartRequest, tag_string_req);
-        }
-
-        // Adding request to request queue
+        }// Adding request to request queue
     }
+
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        intent.putExtra("outputFormat",Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(intent,PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri filePath = data.getData();
+            try {
+                //Getting the Bitmap from Gallery
+                dp = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                //encoding image to string
+
+                //Setting the Bitmap to ImageView
+                dpView.setImageBitmap(dp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public  byte[] getFileDataFromDrawable(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,80,byteArrayOutputStream);
+        return  byteArrayOutputStream.toByteArray();
+    }
+
 
     private void showDialog() {
         if (!pDialog.isShowing())
@@ -285,8 +320,25 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
-//---------------------------------------------------------------------
 
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize, boolean filter) {
+
+        if(realImage==null)
+            return null;
+
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width, height, filter);
+        return newBitmap;
+    }
+
+//---------------------------------------------------------------------
 
    /* public String getStringImage(Bitmap bmp) {
         if(bmp==null)
@@ -299,53 +351,4 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         // System.out.println("BABE:  " + encodedImage);
         return encodedImage;
     }*/
-
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        intent.putExtra("outputFormat",Bitmap.CompressFormat.JPEG.toString());
-        startActivityForResult(intent,PICK_IMAGE_REQUEST);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri filePath = data.getData();
-            try {
-                //Getting the Bitmap from Gallery
-                dp = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-
-                //encoding image to string
-                //Setting the Bitmap to ImageView
-                dpView.setImageBitmap(dp);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public  byte[] getFileDataFromDrawable(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,80,byteArrayOutputStream);
-        return  byteArrayOutputStream.toByteArray();
-    }
-
-    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
-                                   boolean filter) {
-        if(realImage==null)
-            return null;
-        float ratio = Math.min(
-                (float) maxImageSize / realImage.getWidth(),
-                (float) maxImageSize / realImage.getHeight());
-        int width = Math.round((float) ratio * realImage.getWidth());
-        int height = Math.round((float) ratio * realImage.getHeight());
-        ;
-        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
-                height, filter);
-        return newBitmap;
-    }
-
-
 }
