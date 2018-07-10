@@ -12,9 +12,10 @@ class Person extends PersonLite {
     private int isOnline;
     private int isFriend;
     private String country, city, state;
-//note that here we are getting the src for the image and in the imageloader we are using that src only
 
-    Person() {
+    //note that here we are getting the src for the image and in the imageloader we are using that src only
+
+    public Person() {
     }
 
     public Person(PersonLite p) {
@@ -110,6 +111,5 @@ class Person extends PersonLite {
     public void setDOB(String dob) {
         this.dob = dob;
     }
-
 
 }

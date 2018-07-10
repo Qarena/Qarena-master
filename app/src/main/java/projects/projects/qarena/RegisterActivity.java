@@ -216,9 +216,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         //Inserting row in users table
                         db.addUser(uid, email, password,dob,country,state,city,firstname,lastname);
 
-                        //Toast.makeText(getApplicationContext(), "User successfully registered.Try login now!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "User successfully registered.Try login now!", Toast.LENGTH_LONG).show();
 
-                        // Launch login activity
+                        // Launch First activity
                         Intent intent = new Intent(
                                 RegisterActivity.this,
                                 FirstActivity.class);
@@ -226,21 +226,19 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         finish();
 
                     } else {
-                        // Error occurred in registration. Get the error
-                        // message
+                        // Error occurred in registration. Get the error message
                         String errorMsg = jObj.getString("error_msg");
-                        //Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
-                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -269,7 +267,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 return params;
             }
         };
-
         {
             int socketTimeout = 30000;
             RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);

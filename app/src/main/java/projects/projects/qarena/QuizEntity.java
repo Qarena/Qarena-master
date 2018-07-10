@@ -3,7 +3,6 @@ package projects.projects.qarena;
 /**
  * Created by HP on 06-Aug-17.
  */
-
 public class QuizEntity {
     String picUrl;
     String title;

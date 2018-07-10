@@ -3,9 +3,7 @@ package projects.projects.qarena;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +17,7 @@ public class QuizRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_register);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -41,14 +40,15 @@ public class QuizRegisterActivity extends AppCompatActivity {
                         startActivity(new Intent(QuizRegisterActivity.this, CreateEventActivity.class));
                         finish();
                         break;
-                    case R.id.item4:
+                    /*case R.id.item4:
                         break;
                     case R.id.item5:
-                        break;
+                        break;*/
                 }
                 return true;
             }
         });
+
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override

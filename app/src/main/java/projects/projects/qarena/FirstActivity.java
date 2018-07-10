@@ -28,6 +28,7 @@ import projects.projects.qarena.app.AppConfig;
 import projects.projects.qarena.app.AppController;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
+
 /*
 Change Log: added register buttons
 added the login feature using Volley
@@ -135,7 +136,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
                         session.setLogin(true, user_id);
 
-                        // Launch main activity
+                        //Launch ProfileActivity
                         Intent intent = new Intent(FirstActivity.this,
                                 ProfileActivity.class);
                         startActivity(intent);
@@ -144,7 +145,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                     } else {
                         // Error in login. Get the error message
                         String errorMsg = jObj.getString("error_msg");
-                        //Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     // JSON error
@@ -157,7 +158,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Login Error: " + error.getMessage());
-                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -168,12 +169,9 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("email", email);
                 params.put("password", password);
-
                 return params;
             }
-
         };
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
@@ -187,7 +185,6 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
-
 
 }
 

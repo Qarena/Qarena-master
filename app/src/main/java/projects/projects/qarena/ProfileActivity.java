@@ -475,11 +475,15 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     public void upload(View v) {
-        //Log.d(TAG, String.valueOf(checkExternalStoragePermission(this)));
+        showFileChooser();
+    }
 
-        //showFileChooser
+    private void showFileChooser() {
+        Toast.makeText(this, "Please choose a .pdf file document to upload", Toast
+                .LENGTH_LONG).show();
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        intent.setType("application/pdf");//TODO restrict to ppt or pdf only... application/ppt, application/pdf
+        intent.setType("application/pdf");
         intent.addCategory(Intent.CATEGORY_OPENABLE);//
 
         try {
@@ -490,6 +494,164 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "Please install a File Manager.",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Method used for encode the file to base64 binary format
+     *
+     * @param file
+     * @return encoded file format
+     */
+    private String encodeFileToBase64Binary(File file) {
+        String encodedfile = null;
+        try {
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+            bytes = new byte[(int) file.length()];
+            fileInputStreamReader.read(bytes);
+            encodedfile = Base64.encodeBase64(bytes).toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return encodedfile;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 1 && data != null && data.getData() != null) {
+            Uri selectedFileURI = data.getData();
+
+
+            //String path = data.getData().getPath();//useless
+
+            final String filePath = getFilePathByUri(getApplicationContext(), selectedFileURI);
+            //String path3 = FilePath.getPath(getApplicationContext(), selectedFileURI);//same as
+            //the above
+
+            /*// If file path object is null then showing toast message to move file into internal storage.
+            if (filePath == null) {
+                Toast.makeText(this, "Please move your PDF file to internal storage & try again.", Toast.LENGTH_LONG).show();
+            }
+            // If file path is not null then PDF uploading file process will starts.
+                 else {
+
+                try {*/
+
+            Log.d(TAG, "uri = " + selectedFileURI + "\nfilePath = " + filePath);
+
+
+            if (!filePath.contains(".pdf")) {
+                showFileChooser();
+            }
+            else {
+                final File file = new File(filePath);
+                encodeFileToBase64Binary(file);//lowered the targetSdkVersion to 22 to avoid runtime
+                // permissions...
+
+
+                // Tag used to cancel the request
+                String tag_string_upload = "req_upload";
+
+                pDialog = new ProgressDialog(ProfileActivity.this);
+                pDialog.setIndeterminate(true);
+                pDialog.setMessage("Uploading...");
+                pDialog.show();
+
+
+                VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                        AppConfig.URL_QuizUpload, new Response.Listener<NetworkResponse>() {
+
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        //Log.d(TAG, "Quiz Upload Response: " + response.toString());
+                        hideDialog();
+
+                        try {
+                            JSONObject jObj = new JSONObject(new String(response.data));
+                            Log.d(TAG, "jObj : " + jObj);
+
+                            //boolean error = jObj.getBoolean("error");
+                            String msg = jObj.getString("message");
+                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, "Quiz Upload Error: " + error.getMessage());
+                                //requestQueue.stop();
+                                pDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "Quiz Upload Error... " +
+                                        "Please try again with a proper file size",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("user_id", user_id);
+                        //Log.d(TAG, "user_id = " + user_id);
+                        return params;
+                    }
+
+                    @Override
+                    protected Map<String, VolleyMultipartRequest.DataPart> getByteData() {
+                        Map<String, VolleyMultipartRequest.DataPart> params = new HashMap<>();
+                        params.put("ppt_file", new DataPart(file.getName(), bytes,
+                                "application/pdf"));//toast here...?
+                        return params;
+                    }
+                };
+                {
+                    int socketTimeout = 30000;
+                    RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy
+                            .DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);//
+                    volleyMultipartRequest.setRetryPolicy(policy);
+                    AppController.getInstance().addToRequestQueue(volleyMultipartRequest, tag_string_upload);
+                }
+            }
+        }
+    }
+
+    private String getFilePathByUri(Context context, Uri uri) {
+        String filepath = "";
+        File file;
+
+        if (uri.getScheme().toString().compareTo("content") == 0) {
+
+            Cursor cursor = context.getContentResolver().query(uri,
+                    new String[]{android.provider.MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.ORIENTATION},
+                    null, null, null);
+
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String mImagePath = cursor.getString(column_index);//
+            cursor.close();
+            filepath = mImagePath;//
+
+        } else if (uri.getScheme().compareTo("file") == 0) {
+
+            try {
+                file = new File(new URI(uri.toString()));
+                if (file.exists())
+                    filepath = file.getAbsolutePath();
+
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            filepath = uri.getPath();
+        }
+        return filepath;
     }
 
     /*@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -512,7 +674,6 @@ public class ProfileActivity extends AppCompatActivity {
         return externalStoragePermissionGranted;
     }*/
 
-
     /*private String readFile(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         try {
@@ -530,285 +691,4 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }*/
 
-
-    /**
-     * Method used for encode the file to base64 binary format
-     *
-     * @param file
-     * @return encoded file format
-     */
-    private String encodeFileToBase64Binary(File file) {
-        String encodedfile = null;
-        try {
-            FileInputStream fileInputStreamReader = new FileInputStream(file);
-            bytes = new byte[(int) file.length()];
-            fileInputStreamReader.read(bytes);
-            encodedfile = Base64.encodeBase64(bytes).toString();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return encodedfile;
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 1 && data != null && data.getData() != null) {
-            Uri selectedFileURI = data.getData();
-
-            //String path = data.getData().getPath();//useless
-
-            final String filePath = getFileNameByUri(getApplicationContext(), selectedFileURI);
-            //String path3 = FilePath.getPath(getApplicationContext(), selectedFileURI);//same as
-            // the above
-
-
-            /*File file = new File(selectedFileURI.getPath().toString());
-            Log.d("", "File : " + file.getName());
-            uploadedFileName = file.getName().toString();
-            tokens = new StringTokenizer(uploadedFileName, ":");
-            first = tokens.nextToken();
-            file_1 = tokens.nextToken().trim();*/
-
-
-            //getContentResolver().get
-            // If file path object is null then showing toast message to move file into internal storage.
-            if (filePath == null) {
-                Toast.makeText(this, "Please move your PDF file to internal storage & try again.", Toast.LENGTH_LONG).show();
-            }
-            // If file path is not null then PDF uploading file process will starts.
-                /* else {
-
-                try {*/
-
-            Log.d(TAG, "uri = " + selectedFileURI + "\nfilePath = " + filePath);
-            final File file = new File(filePath);
-            encodeFileToBase64Binary(file);//Permission denied...
-
-            // Tag used to cancel the request
-            String tag_string_upload = "req_upload";
-
-            pDialog = new ProgressDialog(ProfileActivity.this);
-            pDialog.setIndeterminate(true);
-            pDialog.setMessage("Please wait ...");
-            pDialog.show();
-
-
-            VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST,
-                    AppConfig.URL_QuizUpload, new Response.Listener<NetworkResponse>() {
-
-                @Override
-                public void onResponse(NetworkResponse response) {
-                    Log.d(TAG, "Quiz Upload Response: " + response.toString());
-                    hideDialog();
-
-                    try {
-                        JSONObject jObj = new JSONObject(new String(response.data));
-                        boolean error = jObj.getBoolean("error");
-                        if (!error) {
-                            // User successfully stored in MySQL
-                            // Now store the user in sqlite
-
-                            /*JSONObject user = jObj.getJSONObject("formdata");
-                            String email = user.getString("email");*/
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, "Quiz Upload Error: " + error.getMessage());
-                            //requestQueue.stop();
-                            pDialog.dismiss();
-                        }
-                    }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("user_id", user_id);
-                    //Log.d(TAG, "user_id = " + user_id);
-                    return params;
-                }
-
-                @Override
-                protected Map<String, VolleyMultipartRequest.DataPart> getByteData() {
-                    Map<String, VolleyMultipartRequest.DataPart> params = new HashMap<>();
-                    params.put("ppt_file", new DataPart(file.getName(), bytes, "application/pdf"));
-                    return params;
-                }
-            };
-            {
-                int socketTimeout = 30000;
-                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-                volleyMultipartRequest.setRetryPolicy(policy);
-                AppController.getInstance().addToRequestQueue(volleyMultipartRequest, tag_string_upload);
-            }// Adding request to request queue
-
-            //requestQueue.add(request);
-        }
-    }
-
-    // get file path
-    private String getFileNameByUri(Context context, Uri uri) {
-        String filepath = "";//default fileName
-        //Uri filePathUri = uri;
-        File file;
-
-        if (uri.getScheme().toString().compareTo("content") == 0) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{android.provider.MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.ORIENTATION}, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-            cursor.moveToFirst();
-
-            String mImagePath = cursor.getString(column_index);
-            cursor.close();
-            filepath = mImagePath;
-
-        } else if (uri.getScheme().compareTo("file") == 0) {
-            try {
-                file = new File(new URI(uri.toString()));
-                if (file.exists())
-                    filepath = file.getAbsolutePath();
-
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            filepath = uri.getPath();
-        }
-        return filepath;
-    }
-
-    /*private class PostDataAsyncTask extends AsyncTask<String, String, String> {
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            Log.d("onPreExecute", "inside onPreExecute");
-
-            pDialog = new ProgressDialog(ProfileActivity.this);//
-            pDialog.setCancelable(false);
-            pDialog.setMessage("Please wait ...");
-            showDialog();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            *//*try {
-
-                HttpClient httpClient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost("https://10.0.2.2/test/file.php");
-
-
-                file1 = new File(Environment.getExternalStorageDirectory(),
-                        file_1);
-                fileBody1 = new FileBody(file1);
-
-                MultipartEntity reqEntity = new MultipartEntity(
-                        HttpMultipartMode.BROWSER_COMPATIBLE);
-                reqEntity.addPart("file1", fileBody1);
-
-
-                httpPost.setEntity(reqEntity);
-
-                HttpResponse response = httpClient.execute(httpPost);
-                HttpEntity resEntity = response.getEntity();
-
-                if (resEntity != null) {
-                    final String responseStr = EntityUtils.toString(resEntity)
-                            .trim();
-                    Log.v(TAG, "Response: " + responseStr);
-
-                }*//*
-
-                //String response = null;
-
-                Log.d("doInBackground", "inside doInBackground");
-
-                try {
-                    URL url = new URL(AppConfig.UPLOAD_URL);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(10000);
-                    conn.setConnectTimeout(15000);
-                    conn.setRequestMethod("POST");
-                    conn.setUseCaches(false);
-                    conn.setDoInput(true);
-                    conn.setDoOutput(true);
-
-                    File file1 = new File(Environment.getExternalStorageDirectory(),
-                            file_1);
-
-                    FileBody fileBody1 = new FileBody(file1);
-
-                    MultipartEntity reqEntity = new MultipartEntity(//deprecated...
-                            HttpMultipartMode.BROWSER_COMPATIBLE);
-                    reqEntity.addPart("file1", fileBody1);
-
-                    conn.setRequestProperty("Connection", "Keep-Alive");
-                    conn.addRequestProperty("Content-length", reqEntity.getContentLength()+"");
-                    conn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
-
-                    OutputStream os = conn.getOutputStream();
-                    reqEntity.writeTo(conn.getOutputStream());
-                    os.close();
-                    conn.connect();
-
-                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        return readStream(conn.getInputStream());
-                    }
-
-                } catch (MalformedURLException e) {
-                    Log.e(TAG, "MalformedURLException: " + e.getMessage());
-                } catch (ProtocolException e) {
-                    Log.e(TAG, "ProtocolException: " + e.getMessage());
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException: " + e.getMessage());
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "NullPointerException: " + e.getMessage());
-                }catch (Exception e) {
-                    Log.e(TAG, "Exception: " + e.getMessage());
-                }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            hideDialog();
-            Log.d("onPostExecute", "RESULT : " + result);
-        }
-    }*/
-
-    /*private static String readStream(InputStream in) {
-        BufferedReader reader = null;
-        StringBuilder builder = new StringBuilder();
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return builder.toString();
-    }*/
 }

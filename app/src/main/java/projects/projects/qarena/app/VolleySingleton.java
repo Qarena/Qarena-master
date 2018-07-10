@@ -38,6 +38,7 @@ public class VolleySingleton {
             }
         });
     }
+
     public ImageLoader getImageLoader()
     {
         return this.imageLoader;
@@ -46,7 +47,7 @@ public class VolleySingleton {
         if (sInstance==null)
             sInstance=new VolleySingleton();
 
-            return sInstance;
+        return sInstance;
     }
 
     public static RequestQueue getRequestQueue(Context context) {

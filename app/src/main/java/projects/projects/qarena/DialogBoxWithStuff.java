@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 
 //FOR VIEWING THE PRIZES IN THE QUIZ SECTION
 public class DialogBoxWithStuff extends DialogFragment {
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

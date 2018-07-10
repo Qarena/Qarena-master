@@ -16,7 +16,9 @@ public class PersonLite {
     private Double locLat, locLong;
     private String dp;
     private int isOnline;
+
     //note that here we are getting the src for the image and in the imageloader we are using that src only
+
     public PersonLite() {
     }
 

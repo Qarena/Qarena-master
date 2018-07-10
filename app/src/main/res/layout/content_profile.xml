@@ -19,8 +19,10 @@
         <Button
             android:layout_width="103dp"
             android:layout_height="wrap_content"
-            android:text="Button"
-            android:onClick="upload"/>
+            android:text="Upload Quiz"
+            android:onClick="upload"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_pic"

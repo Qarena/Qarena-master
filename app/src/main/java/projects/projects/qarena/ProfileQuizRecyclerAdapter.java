@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by HP on 06-Aug-17.
  */
-
 public class ProfileQuizRecyclerAdapter extends RecyclerView.Adapter<ProfileQuizRecyclerAdapter.MyViewHolder> {
     List<QuizEntity> dataArrayList;
     QuizEntity quizEntity;
     Context context;
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, description;
 
@@ -26,7 +26,6 @@ public class ProfileQuizRecyclerAdapter extends RecyclerView.Adapter<ProfileQuiz
             this.description=(TextView)view.findViewById(R.id.quizDescription);
         }
     }
-
 
     public ProfileQuizRecyclerAdapter(Context context, List<QuizEntity> dataArrayList) {
         this.dataArrayList= dataArrayList;
@@ -43,16 +42,13 @@ public class ProfileQuizRecyclerAdapter extends RecyclerView.Adapter<ProfileQuiz
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        //TODO
         quizEntity=dataArrayList.get(position);
         holder.title.setText(quizEntity.getTitle());
         holder.description.setText(quizEntity.getDescription());
-
     }
 
     @Override
     public int getItemCount() {
-
         return dataArrayList.size();
     }
 }
