@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_view_uploaded_quiz"
+        android:title="@string/view_uploaded_quiz_title"
+        android:orderInCategory="99"
+        appcompat:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

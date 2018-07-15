@@ -37,7 +37,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
@@ -53,14 +52,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import projects.projects.qarena.activities.ViewUploadedQuizListActivity;
 import projects.projects.qarena.app.AppConfig;
 import projects.projects.qarena.app.AppController;
-import projects.projects.qarena.app.VolleySingleton;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
+import projects.projects.qarena.models.QuizEntity;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -87,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String file_1;
     public static final int REQUEST_EXTERNAL_PERMISSION_CODE = 666;
     private byte[] bytes;
-
+    public static String fileNames = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,20 +130,20 @@ public class ProfileActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("hi i am not working");
                 startActivity(new Intent(getApplicationContext(), AccountEdit.class));
-
             }
         });
 
         //------------------------------------------------------------------------------------------
         db = new SQLiteHandler(getApplicationContext());
+
         // session manager checks is user is logged in or not
         session = new SessionManager(getApplicationContext());
         if (!session.isLoggedIn()) {
             logoutUser();
         }
         user_id = session.getUserId();
+
         //Toast.makeText(this, "The saved user id"+user_id, Toast.LENGTH_SHORT).show();
         HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");
@@ -150,8 +151,8 @@ public class ProfileActivity extends AppCompatActivity {
         loadProfile(user_id);
 
 
-        ImageLoader ir = VolleySingleton.getInstance().getImageLoader();
-        String imageUrl = AppConfig.URL_DP + "//" + uid + ".png";
+        /*ImageLoader ir = VolleySingleton.getInstance().getImageLoader();
+        String imageUrl = AppConfig.URL_DP + "//" + user_id + ".png";//TODO use correct url...
         ir.get(imageUrl, new com.android.volley.toolbox.ImageLoader.ImageListener() {
             @Override
             public void onResponse(com.android.volley.toolbox.ImageLoader.ImageContainer response, boolean isImmediate) {
@@ -162,11 +163,12 @@ public class ProfileActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "Error retrieving image!", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
 
         quizRecycler = (RecyclerView) findViewById(R.id.quiz_recycler);
         loadQuiz("Kolkata");
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -184,15 +186,16 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(new Intent(ProfileActivity.this, CreateEventActivity.class));
                         finish();
                         break;
-                    case R.id.item4:
+                    /*case R.id.item4:
                         logoutUser();
                         break;
                     case R.id.item5:
-                        break;
+                        break;*/
                 }
                 return true;
             }
         });
+
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -259,6 +262,11 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(i);
             return true;
         }
+        if (id == R.id.action_view_uploaded_quiz) {
+            Intent i = new Intent(getApplicationContext(), ViewUploadedQuizListActivity.class);
+            startActivity(i);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -268,7 +276,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         db.deleteUsers();
 
-        // Launching the login activity
+        // Launching the FirstActivity
         Intent intent = new Intent(getApplicationContext(), FirstActivity.class);
         startActivity(intent);
         finish();
@@ -279,16 +287,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 AppConfig.URL_QUIZ, new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Response: " + response.toString());
                 hideDialog();
                 //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
-                JSONArray quizArray = null;
+
+                JSONArray quizArray;
                 try {
                     dataModelArrayList = new ArrayList<>();
                     quizArray = new JSONArray(response);
+
                     for (int i = 0; i < quizArray.length(); i++) {
                         JSONObject quizDetail = quizArray.getJSONObject(i);
                         QuizEntity quizEntity = new QuizEntity();
@@ -309,64 +318,62 @@ public class ProfileActivity extends AppCompatActivity {
                 quizRecycler.setAdapter(adapter);
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
-
             @Override
             protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
+                // Posting parameters to url
+                Map<String, String> params = new HashMap<>();
                 params.put("city", city);
                 return params;
             }
-
         };
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(stringRequest, tag_string_quiz);
     }
 
     private void loadProfile(final String uid) {
+
         // Tag used to cancel the request
         String tag_string_req = "req_profile";
 
         pDialog.setMessage("Loading Profile ...");
         //showDialog();
+
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.URL_PROFILE, new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Response: " + response.toString());
                 hideDialog();
+
                 //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
-                JSONObject jsonObject = null;
+                JSONObject jsonObject;
                 try {
                     jsonObject = new JSONObject(response);
+
                     tvName.setText(jsonObject.getString("first_name") + "  "
                             + jsonObject.getString("last_name"));
                     tvEmail.setText(jsonObject.getString("email"));
                     tvPoints.setText("Points :  " + jsonObject.getString("points"));
                     tvLocation.setText(jsonObject.getString("city") + " | "
                             + jsonObject.getString("current_state") + " | " + jsonObject.getString("country"));
-                    String url = "http://35.198.203.61/utilities/image?file_name=" + jsonObject.getString("pro_pic");
+
+                    String url = AppConfig.URL_ImageEndpoint + jsonObject.getString("pro_pic");
+
                     Glide.with(ProfileActivity.this).load(url).into(proPic);
                     ratingBar.setRating(Float.parseFloat(jsonObject.getString("rating")));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Login Error: " + error.getMessage());
@@ -375,7 +382,6 @@ public class ProfileActivity extends AppCompatActivity {
                 hideDialog();
             }
         }) {
-
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
@@ -385,7 +391,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         };
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
@@ -411,7 +416,8 @@ public class ProfileActivity extends AppCompatActivity {
                     String errorMsg = jObj.getString("message");
                     if (!error) {
                         Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
-                        // Launch login activity
+
+                        // Launch ProfileActivity
                         Intent intent = new Intent(
                                 ProfileActivity.this,
                                 ProfileActivity.class);
@@ -420,9 +426,8 @@ public class ProfileActivity extends AppCompatActivity {
                         finish();
                     } else {
 
-                        // Error occurred in registration. Get the error
-                        // message
-                        //Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
+                        // Error occurred in registration. Get the error message
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -443,7 +448,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 // Posting params to register url
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("uid", uid);
                 params.put("friend_id", fid);
                 params.put("type", type);
@@ -474,21 +479,30 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void upload(View v) {
+    public void editQuiz(View v){
+
+    }
+
+    public void viewUploadedQuiz(View v) {
+        startActivity(new Intent(this, ViewUploadedQuizListActivity.class));
+    }
+
+
+    public void uploadQuiz(View v) {
         showFileChooser();
     }
 
     private void showFileChooser() {
-        Toast.makeText(this, "Please choose a .pdf file document to upload", Toast
+        Toast.makeText(this, "Please choose a .pdf or a .ppt or a .pptx document to upload", Toast
                 .LENGTH_LONG).show();
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        intent.setType("application/pdf");
+        intent.setType("application/pdf");//TODO
         intent.addCategory(Intent.CATEGORY_OPENABLE);//
 
         try {
             startActivityForResult(
-                    Intent.createChooser(intent, "Select a quiz pdf/ppt to upload"),
+                    Intent.createChooser(intent, "Select a pdf/ppt file to upload"),
                     1);//
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, "Please install a File Manager.",
@@ -547,12 +561,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (!filePath.contains(".pdf")) {
                 showFileChooser();
-            }
-            else {
+            } else {
                 final File file = new File(filePath);
                 encodeFileToBase64Binary(file);//lowered the targetSdkVersion to 22 to avoid runtime
                 // permissions...
-
 
                 // Tag used to cancel the request
                 String tag_string_upload = "req_upload";
@@ -575,7 +587,11 @@ public class ProfileActivity extends AppCompatActivity {
                             JSONObject jObj = new JSONObject(new String(response.data));
                             Log.d(TAG, "jObj : " + jObj);
 
-                            //boolean error = jObj.getBoolean("error");
+                            boolean error = jObj.getBoolean("error");
+                            if(!error)
+                                //Inserting row in fileNames table
+                                db.addFileNames(new Date().toString(), filePath, file.getName());
+
                             String msg = jObj.getString("message");
                             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 
@@ -591,7 +607,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 //requestQueue.stop();
                                 pDialog.dismiss();
                                 Toast.makeText(getApplicationContext(), "Quiz Upload Error... " +
-                                        "Please try again with a proper file size",
+                                                "Please try again with a proper file size",
                                         Toast.LENGTH_LONG).show();
                             }
                         }) {

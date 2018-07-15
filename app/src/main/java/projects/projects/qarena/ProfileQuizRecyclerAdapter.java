@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import projects.projects.qarena.models.QuizEntity;
+
 /**
  * Created by HP on 06-Aug-17.
  */

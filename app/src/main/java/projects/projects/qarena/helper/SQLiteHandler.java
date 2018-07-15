@@ -39,6 +39,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_STATE = "state";
     private static final String KEY_CITY = "city";
 
+    // File Names Uploaded table name
+    private static final String TABLE_FILE_NAMES = "file_names";
+
+    private static final String KEY_TIME_STAMP = "time_stamp";
+    private static final String KEY_FILE_PATH = "file_path";
+    private static final String KEY_FILE_NAME = "file_name";
+
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,6 +59,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_PASSWORD + " TEXT,"+ KEY_FIRSTNAME + " TEXT," + KEY_LASTNAME + " TEXT," +
                 KEY_DOB + " TEXT," + KEY_COUNTRY + " TEXT," + KEY_STATE + " TEXT,"+ KEY_CITY + " TEXT )";
         db.execSQL(CREATE_LOGIN_TABLE);
+
+        String CREATE_FILE_NAMES_TABLE = "CREATE TABLE " + TABLE_FILE_NAMES + "("
+                + KEY_TIME_STAMP + " TEXT PRIMARY KEY," + KEY_FILE_PATH + " TEXT," + KEY_FILE_NAME +
+                " TEXT )";
+        db.execSQL(CREATE_FILE_NAMES_TABLE);
 
         Log.d(TAG, "Database tables created");
     }
@@ -102,7 +114,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Move to first row
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
-            user.put("user_id", cursor.getString(cursor.getColumnIndex("user_id")));
+            user.put("user_id", cursor.getString(cursor.getColumnIndex("user_id")));//change
+            // hardcoded values...
             user.put("email", cursor.getString(cursor.getColumnIndex("email")));
             user.put("password", cursor.getString(cursor.getColumnIndex("password")));
             user.put("firstname",cursor.getString(cursor.getColumnIndex("firstname")));
@@ -111,10 +124,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             user.put("country",cursor.getString(cursor.getColumnIndex("country")));
             user.put("state",cursor.getString(cursor.getColumnIndex("state")));
             user.put("city",cursor.getString(cursor.getColumnIndex("city")));
-
-
-            //System.out.println( cursor.getString(3));
-
         }
         cursor.close();
         db.close();
@@ -134,6 +143,46 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
 
         Log.d(TAG, "Deleted all user info from sqlite");
+    }
+
+    /**
+     * Storing file names uploaded
+     */
+    public void addFileNames(String timeStamp, String filePath, String fileName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TIME_STAMP, timeStamp); // timeStamp
+        values.put(KEY_FILE_PATH, filePath); // filePath
+        values.put(KEY_FILE_NAME, fileName); // fileName
+
+        // Inserting Row
+        long id = db.insert(TABLE_FILE_NAMES, null, values);
+        db.close(); // Closing database connection
+
+        Log.d(TAG, "New file name inserted into sqlite: " + id);
+    }
+
+    public HashMap<String,String> getAllFileNames(){
+        HashMap<String,String> fileNames = new HashMap<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_FILE_NAMES;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                fileNames.put(cursor.getString(cursor.getColumnIndex(KEY_FILE_NAME)), cursor.getString(cursor.getColumnIndex(KEY_FILE_PATH)));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        // return fileNames
+        Log.d(TAG, "Fetching fileNames & filePaths from Sqlite: " + fileNames.toString());
+        return fileNames;
     }
 
 }

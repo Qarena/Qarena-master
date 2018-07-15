@@ -49,6 +49,7 @@ import projects.projects.qarena.app.AppConfig;
 import projects.projects.qarena.app.VolleySingleton;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
+import projects.projects.qarena.models.QuizEntity;
 
 public class QuizzesActivity extends AppCompatActivity {
     ViewPager viewPager;
@@ -84,27 +85,8 @@ public class QuizzesActivity extends AppCompatActivity {
         //---------------------------------------------------
 
         quizzes = new ArrayList<>();
-        //TODO get the details of quizzes and store in this ArrayList
-        //..............Example................
-        /*QuizEntity quiz = new QuizEntity();
-        quiz.title = "Animal Kingdom";
-        quiz.age_res = "18 to 25 Years";
-        quiz.category = "Animals/Species";
-        quiz.level = "State";
-        quiz.mode = 1;
-        quiz.organizer_id = "rickyBuoy";
-        quiz.status = 0;
-        quiz.max_part = 50;
-        quiz.address = "Rath-Tala, Belaghariya, Dhakuria, Rabindrasarovar Area, Kolkata, West Bengal 700058";
-        quiz.shortAddress = "Nazrul Mancha";
-        quiz.description = "A quiz on animals. A quiz on animals. A quiz on animals. A quiz on animals. A quiz on animals.";
-        quiz.picUrl = "https://s-media-cache-ak0.pinimg.com/736x/a7/45/ab/a745abb8099992acd9af3e809e565be2--large-posters-movie-tv.jpg";
-        quiz.price = "INR 50";
-        quiz.time_to = "12:00 AM";
-        quiz.time_from = "10:00 AM";
-        quizzes.add(quiz);*/
 
-        findQuizzes();
+        getAllQuizzes();
 
         sortOption = (TextView) findViewById(R.id.sort_option);
         sortOption.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +101,7 @@ public class QuizzesActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         city = cities[i];
                                         sortOption.setText(city);
-                                        findQuizzes();
+                                        getAllQuizzes();
                                     }
                                 })
                         .create().show();
@@ -185,23 +167,24 @@ public class QuizzesActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
-    void findQuizzes() {
+    void getAllQuizzes() {
         quizzes.clear();
+
         dialog = new ProgressDialog(QuizzesActivity.this);
         dialog.setIndeterminate(true);
-        dialog.setMessage("Loading quizzes near you");
+        dialog.setMessage("Loading all quizzes near you");
         dialog.show();
 
         final RequestQueue requestQueue = VolleySingleton.getRequestQueue(this);
         requestQueue.start();
 
-        StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_SearchQuiz,
+        StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_GetAllQuizzes,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         dialog.dismiss();
                         requestQueue.stop();
-                        Log.d("SearchResponse", response);
+                        Log.d(TAG, "Get all quizzes response " + response);
 
                         try {
                             JSONArray results = (new JSONObject(response)).getJSONArray("results");
@@ -249,8 +232,7 @@ public class QuizzesActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("city", city);
-                params.put("datetime_from", "2017-01-01 00:00");
-
+                params.put("datetime_from", "2017-01-01 00:00");//TODO remove hard coded...
                 return params;
             }
         };

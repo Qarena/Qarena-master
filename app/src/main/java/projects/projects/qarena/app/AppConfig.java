@@ -19,9 +19,6 @@ public class AppConfig {
     public static String URL_NOTIFICATIONS = " https://qufinder.000webhostapp.com//notifications.php";
 
     // Server user friends url
-    public static String URL_QUIZ = "http://35.198.203.61/utilities/search_quiz";
-    public static String URL_CREATE_QUIZ="http://35.198.203.61/utilities/create_quiz";
-
     public static String URL_FRIENDS = " https://qufinder.000webhostapp.com//friends.php";
 
     // Server user profile url
@@ -38,8 +35,15 @@ public class AppConfig {
 
     public static String signallingIp="http://192.168.0.100:7800";
 
-    public static String URL_SearchQuiz = "http://35.198.203.61/utilities/advanced_search_quiz";
     public static String URL_ImageEndpoint = "http://35.198.203.61/utilities/image?file_name=";
 
+
     public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
+    public static String URL_QuizView = "http://35.198.203.61/utilities/get_ppt";
+    public static String URL_QuizEdit = "http://35.198.203.61/utilities/get_quiz_details";
+
+    public static String URL_CREATE_QUIZ="http://35.198.203.61/utilities/create_quiz";
+    public static String URL_QUIZ = "http://35.198.203.61/utilities/search_quiz";//
+    public static String URL_GetAllQuizzes =
+            "http://35.198.203.61/utilities/advanced_search_quiz";//used in QuizzesActivity
 }

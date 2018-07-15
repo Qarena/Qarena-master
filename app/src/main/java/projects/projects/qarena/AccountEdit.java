@@ -21,9 +21,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +33,6 @@ import java.util.Map;
 
 import projects.projects.qarena.app.AppConfig;
 import projects.projects.qarena.app.AppController;
-import projects.projects.qarena.app.VolleySingleton;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
 
@@ -122,7 +119,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             }
         });
 
-        ImageLoader ir = VolleySingleton.getInstance().getImageLoader();
+        /*ImageLoader ir = VolleySingleton.getInstance().getImageLoader();
         String imageUrl = AppConfig.URL_DP + "//" + uid + ".png";
         ir.get(imageUrl, new com.android.volley.toolbox.ImageLoader.ImageListener() {
             @Override
@@ -134,7 +131,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(getApplicationContext(), "Error retrieving image!", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
     }
 
@@ -160,11 +157,13 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 return;
             }
             if (!cpassword.equals(password) && password.isEmpty()) {
-                Toast.makeText(this.getApplicationContext(), "Passwords dont match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.getApplicationContext(), "Passwords do not match", Toast
+                        .LENGTH_SHORT).show();
                 return;
             }
             if (!isConnected()) {
-                Toast.makeText(getApplicationContext(), "Not connected to the internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Not connected to the internet!!", Toast
+                        .LENGTH_SHORT).show();
             } else {
                 etUser(uid, dp, password, dob, country, state, city, fname, lname);
             }
