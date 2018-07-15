@@ -479,35 +479,58 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void editQuiz(View v){
-
-    }
-
-    public void viewUploadedQuiz(View v) {
-        startActivity(new Intent(this, ViewUploadedQuizListActivity.class));
-    }
-
-
     public void uploadQuiz(View v) {
         showFileChooser();
     }
 
     private void showFileChooser() {
-        Toast.makeText(this, "Please choose a .pdf or a .ppt or a .pptx document to upload", Toast
+        Toast.makeText(this, "Please choose a .ppt document to upload", Toast
                 .LENGTH_LONG).show();
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        intent.setType("application/pdf");//TODO
+        intent.setType("application/pdf");//TODO change to ppt
         intent.addCategory(Intent.CATEGORY_OPENABLE);//
 
         try {
             startActivityForResult(
-                    Intent.createChooser(intent, "Select a pdf/ppt file to upload"),
+                    Intent.createChooser(intent, "Select a ppt file to upload"),
                     1);//
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Please install a File Manager.",
+            Toast.makeText(this, "Please install a File Manager...",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String getFilePathByUri(Context context, Uri uri) {
+        String filepath = "";
+        File file;
+
+        if (uri.getScheme().toString().compareTo("content") == 0) {
+
+            Cursor cursor = context.getContentResolver().query(uri,
+                    new String[]{android.provider.MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.ORIENTATION},
+                    null, null, null);
+
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String mImagePath = cursor.getString(column_index);//
+            cursor.close();
+            filepath = mImagePath;//
+
+        } else if (uri.getScheme().compareTo("file") == 0) {
+
+            try {
+                file = new File(new URI(uri.toString()));
+                if (file.exists())
+                    filepath = file.getAbsolutePath();
+
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            filepath = uri.getPath();
+        }
+        return filepath;
     }
 
     /**
@@ -559,7 +582,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d(TAG, "uri = " + selectedFileURI + "\nfilePath = " + filePath);
 
 
-            if (!filePath.contains(".pdf")) {
+            if (!filePath.contains(".pdf")) {//TODO change to ppt
                 showFileChooser();
             } else {
                 final File file = new File(filePath);
@@ -637,74 +660,5 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
-
-    private String getFilePathByUri(Context context, Uri uri) {
-        String filepath = "";
-        File file;
-
-        if (uri.getScheme().toString().compareTo("content") == 0) {
-
-            Cursor cursor = context.getContentResolver().query(uri,
-                    new String[]{android.provider.MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.ORIENTATION},
-                    null, null, null);
-
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String mImagePath = cursor.getString(column_index);//
-            cursor.close();
-            filepath = mImagePath;//
-
-        } else if (uri.getScheme().compareTo("file") == 0) {
-
-            try {
-                file = new File(new URI(uri.toString()));
-                if (file.exists())
-                    filepath = file.getAbsolutePath();
-
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            filepath = uri.getPath();
-        }
-        return filepath;
-    }
-
-    /*@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public static final String[] PERMISSIONS_EXTERNAL_STORAGE = {
-            READ_EXTERNAL_STORAGE
-    };
-
-    public boolean checkExternalStoragePermission(Activity activity) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            return true;
-        }
-
-        int readStoragePermissionState = ContextCompat.checkSelfPermission(activity, READ_EXTERNAL_STORAGE);
-        //int writeStoragePermissionState = ContextCompat.checkSelfPermission(activity,WRITE_EXTERNAL_STORAGE);
-        boolean externalStoragePermissionGranted = readStoragePermissionState == PackageManager.PERMISSION_GRANTED;
-        if (!externalStoragePermissionGranted) {
-            requestPermissions(PERMISSIONS_EXTERNAL_STORAGE, REQUEST_EXTERNAL_PERMISSION_CODE);
-        }
-
-        return externalStoragePermissionGranted;
-    }*/
-
-    /*private String readFile(File file) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        try {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
-            while (line != null) {
-                sb.append(line);
-                sb.append("\n");
-                line = br.readLine();
-            }
-            return sb.toString();
-        } finally {
-            br.close();
-        }
-    }*/
 
 }

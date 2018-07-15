@@ -25,14 +25,6 @@
             android:text="Upload Quiz"
             android:textColor="@android:color/white"/>
 
-        <Button
-            android:layout_width="103dp"
-            android:layout_height="wrap_content"
-            android:text="Edit a Quiz"
-            android:onClick="editQuiz"
-            android:background="@color/colorAccent"
-            android:textColor="@android:color/white"/>
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_pic"
             android:layout_width="110dp"
