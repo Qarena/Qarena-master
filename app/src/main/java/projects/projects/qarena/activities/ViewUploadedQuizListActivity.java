@@ -1,6 +1,5 @@
 package projects.projects.qarena.activities;
 
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -32,7 +31,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
     private SQLiteHandler db;
     private String user_id;
 
-    private ProgressDialog pDialog;
+    //private ProgressDialog pDialog;
     private ListView listView;
     private HashMap<String, String> filesMap;
     private ArrayList<String> fileNamesList;
@@ -44,8 +43,8 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pDialog = new ProgressDialog(this);
-        pDialog.setCancelable(false);
+        /*pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);*/
 
         //-------------------------------------------------------
         db = new SQLiteHandler(getApplicationContext());
