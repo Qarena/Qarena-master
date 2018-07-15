@@ -54,7 +54,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         if (!session.isLoggedIn()) {
             logoutUser();
         }
-        user_id = session.getUserId();
+        //user_id = session.getUserId();
 
         /*HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");*/
@@ -62,8 +62,10 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         filesMap = db.getAllFileNames();
         //--------------------------------------------------------
 
-        if (filesMap.size() == 0)
+        if (filesMap.size() == 0) {
             Toast.makeText(this, "No Quiz file uploaded yet...", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         else {
             Set<String> keySet = filesMap.keySet();
