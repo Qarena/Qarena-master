@@ -232,9 +232,9 @@ public class CreateEventActivity extends AppCompatActivity  {
                         startActivity(new Intent(CreateEventActivity.this, CreateEventActivity.class));
                         finish();
                         break;
-                    case R.id.item4:
+                    /*case R.id.item4:
                         break;
-                    /*case R.id.item5:
+                    case R.id.item5:
                         break;*/
                 }
                 return true;
@@ -364,7 +364,7 @@ public class CreateEventActivity extends AppCompatActivity  {
 
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Edit Response: " + response.toString());
+                Log.d(TAG, "Update Response: " + response.toString());
                 hideDialog();
 
                 JSONObject jObj;
@@ -374,10 +374,9 @@ public class CreateEventActivity extends AppCompatActivity  {
 
                     if (!error) {
                         // JSONObject user = jObj.getJSONObject("user");
-                        //Toast.makeText(getApplicationContext(), "User successfully updated your
-                        // account", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "User successfully updated your account", Toast.LENGTH_LONG).show();
 
-                        // Launch login activity
+                        // Launch FirstActivity
                         Intent intent = new Intent(
                                 CreateEventActivity.this,
                                 FirstActivity.class);
@@ -385,9 +384,9 @@ public class CreateEventActivity extends AppCompatActivity  {
                         finish();
 
                     } else {
-                        // Error occurred in registration. Get the error message
+                        // Error occurred in updation. Get the error message
                         String errorMsg = jObj.getString("error_msg");
-                        //Toast.makeText(getApplicationContext(),"Errir in else"+errorMsg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -396,8 +395,8 @@ public class CreateEventActivity extends AppCompatActivity  {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Registration Error: " + error.getMessage());
-                //Toast.makeText(getApplicationContext(),"Toast"+error.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Updation Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
