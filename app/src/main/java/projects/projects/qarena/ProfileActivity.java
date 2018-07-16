@@ -321,7 +321,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -484,8 +484,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showFileChooser() {
-        Toast.makeText(this, "Please choose a .ppt document to upload", Toast
-                .LENGTH_LONG).show();
+        Toast.makeText(this, "Please choose a quiz ppt document to upload", Toast
+                .LENGTH_SHORT).show();
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         intent.setType("application/pdf");//TODO change to ppt
@@ -493,10 +493,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         try {
             startActivityForResult(
-                    Intent.createChooser(intent, "Select a ppt file to upload"),
+                    Intent.createChooser(intent, "Select a file to upload"),
                     1);//
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Please install a File Manager...",
+            Toast.makeText(this, "Please install a File Manager app...",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -515,8 +515,8 @@ public class ProfileActivity extends AppCompatActivity {
             cursor.moveToFirst();
             String mImagePath = cursor.getString(column_index);//
             cursor.close();
-            filepath = mImagePath;//
-
+            filepath = mImagePath;
+            //cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
         } else if (uri.getScheme().compareTo("file") == 0) {
 
             try {
@@ -570,24 +570,19 @@ public class ProfileActivity extends AppCompatActivity {
             //String path3 = FilePath.getPath(getApplicationContext(), selectedFileURI);//same as
             //the above
 
-            /*// If file path object is null then showing toast message to move file into internal storage.
             if (filePath == null) {
-                Toast.makeText(this, "Please move your PDF file to internal storage & try again.", Toast.LENGTH_LONG).show();
-            }
-            // If file path is not null then PDF uploading file process will starts.
-                 else {
+                Toast.makeText(this, "Please move your selected file to an internal storage " +
+                        "location on your phone first & then retry...", Toast.LENGTH_LONG).show();
 
-                try {*/
-
-            Log.d(TAG, "uri = " + selectedFileURI + "\nfilePath = " + filePath);
-
-
-            if (!filePath.contains(".pdf")) {//TODO change to ppt
+            } else if (!filePath.contains(".pdf")) {//TODO change to ppt
                 showFileChooser();
+
             } else {
+                //try {
                 final File file = new File(filePath);
                 encodeFileToBase64Binary(file);//lowered the targetSdkVersion to 22 to avoid runtime
                 // permissions...
+
 
                 // Tag used to cancel the request
                 String tag_string_upload = "req_upload";
@@ -603,7 +598,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        //Log.d(TAG, "Quiz Upload Response: " + response.toString());
+                        Log.d(TAG, "Quiz file upload network res status code: " + response
+                                .statusCode);
                         hideDialog();
 
                         try {
@@ -611,12 +607,18 @@ public class ProfileActivity extends AppCompatActivity {
                             Log.d(TAG, "jObj : " + jObj);
 
                             boolean error = jObj.getBoolean("error");
-                            if(!error)
+
+                            if (!error)
                                 //Inserting row in fileNames table
                                 db.addFileNames(new Date().toString(), filePath, file.getName());
+                            else
+                                Toast.makeText(getApplicationContext(), "Oops!!! Something went " +
+                                        "wrong... Please retry...", Toast.LENGTH_SHORT).show();
 
-                            String msg = jObj.getString("message");
-                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+                            String error_message = jObj.getString("message");
+                            Log.d(TAG, error_message);
+
+                            Toast.makeText(getApplicationContext(), error_message, Toast.LENGTH_LONG).show();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -626,19 +628,26 @@ public class ProfileActivity extends AppCompatActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.e(TAG, "Quiz Upload Error: " + error.getMessage());
+                                Log.e(TAG, "Quiz file upload err msg: " + error.getMessage());
                                 //requestQueue.stop();
                                 pDialog.dismiss();
-                                Toast.makeText(getApplicationContext(), "Quiz Upload Error... " +
-                                                "Please try again with a proper file size",
-                                        Toast.LENGTH_LONG).show();
+
+                                if (error.networkResponse.statusCode == 413)
+                                    Toast.makeText(getApplicationContext(), "Selected quiz file " +
+                                                    "is too big in size... Please select a " +
+                                                    "smaller file & try again...",
+                                            Toast.LENGTH_LONG).show();
+                                else
+                                    Toast.makeText(getApplicationContext(), "Some network issue " +
+                                            "occurred while uploading the selected file... Please" +
+                                            " retry in sometime...", Toast
+                                            .LENGTH_SHORT).show();
                             }
                         }) {
                     @Override
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<>();
                         params.put("user_id", user_id);
-                        //Log.d(TAG, "user_id = " + user_id);
                         return params;
                     }
 
@@ -646,7 +655,7 @@ public class ProfileActivity extends AppCompatActivity {
                     protected Map<String, VolleyMultipartRequest.DataPart> getByteData() {
                         Map<String, VolleyMultipartRequest.DataPart> params = new HashMap<>();
                         params.put("ppt_file", new DataPart(file.getName(), bytes,
-                                "application/pdf"));//toast here...?
+                                "application/pdf"));//TODO change to ppt
                         return params;
                     }
                 };

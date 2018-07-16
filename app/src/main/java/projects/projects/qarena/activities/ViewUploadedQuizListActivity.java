@@ -29,7 +29,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
 
     private SessionManager session;
     private SQLiteHandler db;
-    private String user_id;
+    //private String user_id;
 
     //private ProgressDialog pDialog;
     private ListView listView;
@@ -85,16 +85,16 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
                     // .getExternalStorageDirectory().getAbsolutePath() +"/"+ selectedItem);
 
                     Intent target = new Intent(Intent.ACTION_VIEW);
-                    target.setDataAndType(Uri.fromFile(file), "application/pdf");//TODO allow ppt
-                    // &/or pptx file(s) as well to be opened...
+                    target.setDataAndType(Uri.fromFile(file), "application/pdf");//TODO change
+                    // to ppt
                     target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-                    Intent intent = Intent.createChooser(target, "Open selected with");
+                    Intent intent = Intent.createChooser(target, "Open selected file with");
                     try {
                         startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         // Instruct the user to install a PDF reader here, or something
-                        Toast.makeText(getApplicationContext(), "Please install a 3rd party pdf reader app on your " +
+                        Toast.makeText(getApplicationContext(), "Please install a pdf reader app on your " +
                                 "phone", Toast.LENGTH_SHORT).show();
                     }
                 }
