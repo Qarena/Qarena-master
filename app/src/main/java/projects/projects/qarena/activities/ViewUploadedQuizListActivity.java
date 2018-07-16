@@ -59,7 +59,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         /*HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");*/
 
-        filesMap = db.getAllFileNames();
+        filesMap = db.getAllFiles();
         //--------------------------------------------------------
 
         if (filesMap.size() == 0) {
@@ -94,8 +94,8 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
                         startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         // Instruct the user to install a PDF reader here, or something
-                        Toast.makeText(getApplicationContext(), "Please install a pdf reader app on your " +
-                                "phone", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please install a ppt reader app" +
+                                " on your phone", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

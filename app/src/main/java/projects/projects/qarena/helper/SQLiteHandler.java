@@ -39,8 +39,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_STATE = "state";
     private static final String KEY_CITY = "city";
 
-    // File Names Uploaded table name
-    private static final String TABLE_FILE_NAMES = "file_names";
+    // Files Uploaded table
+    private static final String TABLE_FILES = "files";
 
     private static final String KEY_TIME_STAMP = "time_stamp";
     private static final String KEY_FILE_PATH = "file_path";
@@ -60,7 +60,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 KEY_DOB + " TEXT," + KEY_COUNTRY + " TEXT," + KEY_STATE + " TEXT,"+ KEY_CITY + " TEXT )";
         db.execSQL(CREATE_LOGIN_TABLE);
 
-        String CREATE_FILE_NAMES_TABLE = "CREATE TABLE " + TABLE_FILE_NAMES + "("
+        String CREATE_FILE_NAMES_TABLE = "CREATE TABLE " + TABLE_FILES + "("
                 + KEY_TIME_STAMP + " TEXT PRIMARY KEY," + KEY_FILE_PATH + " TEXT," + KEY_FILE_NAME +
                 " TEXT )";
         db.execSQL(CREATE_FILE_NAMES_TABLE);
@@ -148,24 +148,24 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing file names uploaded
      */
-    public void addFileNames(String timeStamp, String filePath, String fileName) {
+    public void addFiles(String timeStamp, String filePath, String fileName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_TIME_STAMP, timeStamp); // timeStamp
+        values.put(KEY_TIME_STAMP, timeStamp); // timeStamp //needed...?
         values.put(KEY_FILE_PATH, filePath); // filePath
         values.put(KEY_FILE_NAME, fileName); // fileName
 
         // Inserting Row
-        long id = db.insert(TABLE_FILE_NAMES, null, values);
+        long id = db.insert(TABLE_FILES, null, values);
         db.close(); // Closing database connection
 
         Log.d(TAG, "New file name inserted into sqlite: " + id);
     }
 
-    public HashMap<String,String> getAllFileNames(){
-        HashMap<String,String> fileNames = new HashMap<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_FILE_NAMES;
+    public HashMap<String,String> getAllFiles(){
+        HashMap<String,String> files = new HashMap<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_FILES;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -173,16 +173,16 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                fileNames.put(cursor.getString(cursor.getColumnIndex(KEY_FILE_NAME)), cursor.getString(cursor.getColumnIndex(KEY_FILE_PATH)));
+                files.put(cursor.getString(cursor.getColumnIndex(KEY_FILE_NAME)), cursor.getString(cursor.getColumnIndex(KEY_FILE_PATH)));
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         db.close();
 
-        // return fileNames
-        Log.d(TAG, "Fetching fileNames & filePaths from Sqlite: " + fileNames.toString());
-        return fileNames;
+        // return files
+        Log.d(TAG, "Fetching fileNames & filePaths from Sqlite: " + files.toString());
+        return files;
     }
 
 }

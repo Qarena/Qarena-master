@@ -610,7 +610,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                             if (!error)
                                 //Inserting row in fileNames table
-                                db.addFileNames(new Date().toString(), filePath, file.getName());
+                                db.addFiles(new Date().toString(), filePath, file.getName());
                             else
                                 Toast.makeText(getApplicationContext(), "Oops!!! Something went " +
                                         "wrong... Please retry...", Toast.LENGTH_SHORT).show();
