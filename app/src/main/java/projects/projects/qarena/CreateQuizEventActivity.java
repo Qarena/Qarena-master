@@ -73,14 +73,21 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
     TextView submit,winner;
     //int flag = 0;
     Calendar myCalendar;
+    public static final String IS_UPDATING = "IsUpdating";
+    public static final String QUIZ_ID = "QuizId";
+    private boolean isUpdate = false;
+    private String quizId = "";
+    private QuizEntity quizEntity = new QuizEntity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         etQid = (EditText) findViewById(R.id.etQid);
         etQname = (EditText) findViewById(R.id.etQname);
@@ -316,9 +323,121 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 winner.setText(textone);
             }
         });
+
+        checkForUpdate();
+
     }
 
 //--------------------------------------UTILITIES---------------------------------------------------------
+
+    private void checkForUpdate(){
+        isUpdate = getIntent().getBooleanExtra(IS_UPDATING, false);
+        changeLabels();
+        if (isUpdate) {
+            quizId = getIntent().getStringExtra(QUIZ_ID);
+            fetchQuiz();
+        }
+    }
+
+    private void changeLabels(){
+        if (isUpdate){
+            getSupportActionBar().setTitle("Update Quiz");
+        } else {
+            getSupportActionBar().setTitle("Create Quiz");
+        }
+
+    }
+
+    private void loadQuizDetails(){
+        etAddress.setText(quizEntity.getAddress());
+        etDateFrom.setText(quizEntity.getTime_from());
+        etDateTo.setText(quizEntity.getTime_to());
+        etDescp.setText(quizEntity.getDescription());
+        etQname.setText(quizEntity.getTitle());
+        etAgeFrom.setText(quizEntity.getAge_res());
+        etAgeTo.setText(quizEntity.getAge_to());
+        etQFee.setText(quizEntity.getPrice());
+        etPartNum.setText(String.valueOf(quizEntity.getMax_part()));
+    }
+
+    private void fetchQuiz(){
+
+        // Tag used to cancel the request
+        String tag_string_req = "req_fetch_quiz_event";
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_QuizDetails, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Quiz event fetch res: " + response.toString());
+                hideDialog();
+
+                JSONObject jObj;
+                try {
+                    jObj = new JSONObject(response);
+
+                    String description = jObj.getString("description");
+                    String address = jObj.getString("address");
+                    String prizes = jObj.getString("prizes");
+                    String age_range_from = jObj.getString("age_range_from");
+                    String age_range_to = jObj.getString("age_range_to");
+                    String category = jObj.getString("category");
+                    String title = jObj.getString("title");
+                    double price = jObj.getDouble("price");
+                    String datetime_from = jObj.getString("datetime_from");
+                    String datetime_to = jObj.getString("datetime_to");
+                    String level = jObj.getString("level");
+                    String quizId = jObj.getInt("quiz_id") + "";
+                    String userId = jObj.getInt("user_id") + "";
+                    String state = jObj.getString("state");
+                    String city = jObj.getString("city");
+                    int max_count = jObj.getInt("participant_count_max");
+                    String cpl_name = jObj.getString("cpl_name");
+
+                    quizEntity.setAddress(address);
+                    quizEntity.setAge_res(age_range_from);
+                    quizEntity.setCategory(category);
+                    quizEntity.setDescription(description);
+                    quizEntity.setLevel(level);
+                    quizEntity.setPrice(price+"");
+                    quizEntity.setPrize(prizes);
+                    quizEntity.setTitle(title);
+                    quizEntity.setTime_from(datetime_from);
+                    quizEntity.setTime_to(datetime_to);
+                    quizEntity.setQuizId(quizId);
+                    quizEntity.setOrganizer_id(userId);
+                    quizEntity.setShortAddress(city + "," + state);
+                    quizEntity.setMax_part(max_count);
+                    quizEntity.setPicUrl(cpl_name);
+                    quizEntity.setAge_to(age_range_to);
+
+                    loadQuizDetails();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Quiz event creation err: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                hideDialog();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Posting params to url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("quiz_id", quizId);
+                return params;
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
 
     private void updateLabelDateFrom() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here

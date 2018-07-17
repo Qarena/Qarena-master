@@ -22,9 +22,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -303,6 +305,7 @@ public class ProfileActivity extends AppCompatActivity {
                         quizEntity.setTitle(quizDetail.getString("title"));
                         //Toast.makeText(ProfileActivity.this,quizDetail.getString("title") , Toast.LENGTH_SHORT).show();
                         quizEntity.setDescription(quizDetail.getString("description"));
+                        quizEntity.setQuizId(quizDetail.getString("quiz_id"));
                         //Toast.makeText(ProfileActivity.this,quizDetail.getString("description") , Toast.LENGTH_SHORT).show();
 
                         dataModelArrayList.add(quizEntity);
@@ -320,6 +323,8 @@ public class ProfileActivity extends AppCompatActivity {
                 /*click listener on a list item here in the recycler view to get to the
                 CreateQuizEventActivity, with all the prefilled values gotten from the
                         URL_QuizDetails backend url endpoint, with the help of the quiz_id*/
+                addListenersToRecycler();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -339,6 +344,33 @@ public class ProfileActivity extends AppCompatActivity {
         };
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(stringRequest, tag_string_quiz);
+    }
+
+    private void addListenersToRecycler(){
+        quizRecycler.addOnItemTouchListener(new RecyclerTouchListener(this,
+                quizRecycler, new ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                //Values are passing to activity & to fragment as well
+//                Toast.makeText(ProfileActivity.this, "Single Click on position        :"+position,
+//                        Toast.LENGTH_SHORT).show();
+                QuizEntity selectedQuiz = adapter.getQuizEntity(position);
+                addUpdateActivity(selectedQuiz);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+//                        Toast.makeText(ProfileActivity.this, "Long press on position :"+position,
+//                                Toast.LENGTH_LONG).show();
+            }
+        }));
+    }
+
+    private void addUpdateActivity(QuizEntity quizEntity){
+        Intent intent = new Intent(this, CreateQuizEventActivity.class);
+        intent.putExtra(CreateQuizEventActivity.IS_UPDATING, true);
+        intent.putExtra(CreateQuizEventActivity.QUIZ_ID, quizEntity.getQuizId());
+        startActivity(intent);
     }
 
     private void loadProfile(final String uid) {
@@ -670,6 +702,57 @@ public class ProfileActivity extends AppCompatActivity {
                     AppController.getInstance().addToRequestQueue(volleyMultipartRequest, tag_string_upload);
                 }
             }
+        }
+    }
+
+    public static interface ClickListener {
+        public void onClick(View view, int position);
+        public void onLongClick(View view, int position);
+    }
+
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private ClickListener clickListener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(Context context, final RecyclerView recycleView, final ClickListener clickListener){
+
+            this.clickListener=clickListener;
+            gestureDetector=new GestureDetector(context,new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child=recycleView.findChildViewUnder(e.getX(),e.getY());
+                    if(child!=null && clickListener!=null){
+                        clickListener.onLongClick(child,recycleView.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            View child=rv.findChildViewUnder(e.getX(),e.getY());
+            if(child!=null && clickListener!=null && gestureDetector.onTouchEvent(e)){
+                clickListener.onClick(child,rv.getChildAdapterPosition(child));
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
     }
 

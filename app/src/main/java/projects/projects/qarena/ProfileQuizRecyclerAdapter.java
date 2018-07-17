@@ -53,4 +53,8 @@ public class ProfileQuizRecyclerAdapter extends RecyclerView.Adapter<ProfileQuiz
     public int getItemCount() {
         return dataArrayList.size();
     }
+
+    public QuizEntity getQuizEntity(int position){
+        return dataArrayList.get(position);
+    }
 }
