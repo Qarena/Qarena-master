@@ -92,7 +92,8 @@ public class QuizzesActivity extends AppCompatActivity {
         sortOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String[] cities = new String[]{"Kolkata", "Jaynagar", "Raniganj", "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
+                final String[] cities = new String[]{"Gurgaon", "Kolkata", "Jaynagar", "Raniganj",
+                        "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
                 new AlertDialog.Builder(QuizzesActivity.this)
                         .setTitle("Choose City")
                         .setItems(cities,
@@ -138,7 +139,7 @@ public class QuizzesActivity extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(QuizzesActivity.this, CreateEventActivity.class));
+                        startActivity(new Intent(QuizzesActivity.this, CreateQuizEventActivity.class));
                         finish();
                         break;
                     case R.id.item4:

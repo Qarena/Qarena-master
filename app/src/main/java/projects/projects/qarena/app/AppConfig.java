@@ -33,17 +33,26 @@ public class AppConfig {
     //graphics directory
     public static String URL_DP = " https://qufinder.000webhostapp.com//uploads";
 
-    public static String signallingIp="http://192.168.0.100:7800";
+    public static String signallingIp = "http://192.168.0.100:7800";
 
     public static String URL_ImageEndpoint = "http://35.198.203.61/utilities/image?file_name=";
 
 
-    public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
-    public static String URL_QuizView = "http://35.198.203.61/utilities/get_ppt";
-    public static String URL_QuizEdit = "http://35.198.203.61/utilities/get_quiz_details";
+    public static String URL_GMaps = "http://maps.google.co.in/maps?q=";
 
-    public static String URL_CREATE_QUIZ="http://35.198.203.61/utilities/create_quiz";
-    public static String URL_QUIZ = "http://35.198.203.61/utilities/search_quiz";//
+
+    public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
+
+    public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";
+    public static String URL_Load_QUIZ = "http://35.198.203.61/utilities/search_quiz";//ProfileActivity
     public static String URL_GetAllQuizzes =
-            "http://35.198.203.61/utilities/advanced_search_quiz";//used in QuizzesActivity
+            "http://35.198.203.61/utilities/advanced_search_quiz";//QuizzesActivity
+
+    public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";
+
+    //List of all the files uploaded by an user, using GET method...
+    // public static String URL_QuizListAllFiles = "http://35.198.203.61/utilities/get_ppt?user_id=";
+
+    //Retrieve a file uploaded, using POST method, with the help of file_name
+    //public static String URL_QuizGetAFile = "http://35.198.203.61/utilities/get_ppt";
 }

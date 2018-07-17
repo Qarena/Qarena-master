@@ -65,7 +65,6 @@ import projects.projects.qarena.models.QuizEntity;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String jsonResponse;//
     private ProgressDialog pDialog;
     PersonLite p;
 
@@ -79,16 +78,15 @@ public class ProfileActivity extends AppCompatActivity {
     SQLiteHandler db;
 
     private static final String TAG = ProfileActivity.class.getSimpleName();
-    String uid = new String();
+    String uid = new String();//""
     String user_id;
     private TextView sortOption;
     private String city = "Kolkata";
     RatingBar ratingBar;
 
-    private String file_1;
     public static final int REQUEST_EXTERNAL_PERMISSION_CODE = 666;
     private byte[] bytes;
-    public static String fileNames = "";
+    public static String quizFileUploadDocType = "application/pdf";//TODO change to ppt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         ratingBar = (RatingBar) findViewById(R.id.ratingbar);
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
@@ -110,7 +109,8 @@ public class ProfileActivity extends AppCompatActivity {
         sortOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String[] cities = new String[]{"Kolkata", "Jaynagar", "Raniganj", "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
+                final String[] cities = new String[]{"Gurgaon","Kolkata", "Jaynagar", "Raniganj",
+                        "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
                 new AlertDialog.Builder(ProfileActivity.this)
                         .setTitle("Choose City")
                         .setItems(cities,
@@ -183,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(ProfileActivity.this, CreateEventActivity.class));
+                        startActivity(new Intent(ProfileActivity.this, CreateQuizEventActivity.class));
                         finish();
                         break;
                     /*case R.id.item4:
@@ -286,10 +286,10 @@ public class ProfileActivity extends AppCompatActivity {
         String tag_string_quiz = "req_quiz";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                AppConfig.URL_QUIZ, new Response.Listener<String>() {
+                AppConfig.URL_Load_QUIZ, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Loading Response: " + response.toString());
+                Log.d(TAG, "Loading Quiz Response: " + response.toString());
                 hideDialog();
                 //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
 
@@ -349,7 +349,7 @@ public class ProfileActivity extends AppCompatActivity {
                 AppConfig.URL_PROFILE, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Loading Response: " + response.toString());
+                Log.d(TAG, "Loading Profile Response: " + response.toString());
                 hideDialog();
 
                 //Toast.makeText(ProfileActivity.this, response, Toast.LENGTH_SHORT).show();
@@ -484,11 +484,11 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showFileChooser() {
-        Toast.makeText(this, "Please choose a quiz ppt document to upload", Toast
-                .LENGTH_SHORT).show();
+        Toast.makeText(this, "Please choose a quiz ppt document to upload...",
+                Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        intent.setType("application/pdf");//TODO change to ppt
+        intent.setType(quizFileUploadDocType);
         intent.addCategory(Intent.CATEGORY_OPENABLE);//
 
         try {
@@ -496,7 +496,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Intent.createChooser(intent, "Select a file to upload"),
                     1);//
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Please install a File Manager app...",
+            Toast.makeText(this, "Please install a File Manager app first...",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -571,8 +571,8 @@ public class ProfileActivity extends AppCompatActivity {
             //the above
 
             if (filePath == null) {
-                Toast.makeText(this, "Please move your selected file to an internal storage " +
-                        "location on your phone first & then retry...", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please move your selected file to a storage " +
+                        "location on your device first & then retry...", Toast.LENGTH_LONG).show();
 
             } else if (!filePath.contains(".pdf")) {//TODO change to ppt
                 showFileChooser();
@@ -617,7 +617,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                             String error_message = jObj.getString("message");
                             Log.d(TAG, error_message);
-
                             Toast.makeText(getApplicationContext(), error_message, Toast.LENGTH_LONG).show();
 
                         } catch (JSONException e) {
@@ -635,7 +634,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 if (error.networkResponse.statusCode == 413)
                                     Toast.makeText(getApplicationContext(), "Selected quiz file " +
                                                     "is too big in size... Please select a " +
-                                                    "smaller file & try again...",
+                                                    "smaller file & retry...",
                                             Toast.LENGTH_LONG).show();
                                 else
                                     Toast.makeText(getApplicationContext(), "Some network issue " +
@@ -643,7 +642,8 @@ public class ProfileActivity extends AppCompatActivity {
                                             " retry in sometime...", Toast
                                             .LENGTH_SHORT).show();
                             }
-                        }) {
+                        })
+                {
                     @Override
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<>();
@@ -654,8 +654,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     protected Map<String, VolleyMultipartRequest.DataPart> getByteData() {
                         Map<String, VolleyMultipartRequest.DataPart> params = new HashMap<>();
-                        params.put("ppt_file", new DataPart(file.getName(), bytes,
-                                "application/pdf"));//TODO change to ppt
+                        params.put("ppt_file", new DataPart(file.getName(), bytes, quizFileUploadDocType));
                         return params;
                     }
                 };

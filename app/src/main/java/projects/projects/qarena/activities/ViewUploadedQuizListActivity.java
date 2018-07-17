@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import projects.projects.qarena.FirstActivity;
+import projects.projects.qarena.ProfileActivity;
 import projects.projects.qarena.R;
 import projects.projects.qarena.helper.SQLiteHandler;
 import projects.projects.qarena.helper.SessionManager;
@@ -81,21 +82,20 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
                     String selectedItem = (String) parent.getItemAtPosition(position);
                     Log.d(TAG, selectedItem);
 
-                    File file = new File(filesMap.get(selectedItem));//Environment
-                    // .getExternalStorageDirectory().getAbsolutePath() +"/"+ selectedItem);
+                    File file = new File(filesMap.get(selectedItem));
 
                     Intent target = new Intent(Intent.ACTION_VIEW);
-                    target.setDataAndType(Uri.fromFile(file), "application/pdf");//TODO change
-                    // to ppt
+                    target.setDataAndType(Uri.fromFile(file), ProfileActivity.quizFileUploadDocType);
                     target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                     Intent intent = Intent.createChooser(target, "Open selected file with");
                     try {
                         startActivity(intent);
                     } catch (ActivityNotFoundException e) {
-                        // Instruct the user to install a PDF reader here, or something
-                        Toast.makeText(getApplicationContext(), "Please install a ppt reader app" +
-                                " on your phone", Toast.LENGTH_SHORT).show();
+                        // Instruct the user to install a ppt reader here, or something
+                        Toast.makeText(getApplicationContext(), "No ppt reader app found on " +
+                                "your device!!! :( Please install it first...", Toast.LENGTH_SHORT)
+                                .show();
                     }
                 }
             });

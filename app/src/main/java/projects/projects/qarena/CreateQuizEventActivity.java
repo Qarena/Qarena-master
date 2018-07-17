@@ -54,20 +54,24 @@ import projects.projects.qarena.helper.SessionManager;
 /**
  * Created by Arka Bhowmik on 2/22/2017.
  */
-public class CreateEventActivity extends AppCompatActivity  {
+public class CreateQuizEventActivity extends AppCompatActivity  {
+
     ProgressDialog pDialog;
     SessionManager session;
     SQLiteHandler db;
+
     String uid = new String();
     String email = new String();
+
     public Bitmap dp;
     ImageView dpView;
     private int PICK_IMAGE_REQUEST = 1;
+
     String TAG = AccountEdit.class.getSimpleName();
     EditText etQname, etQid, etAddress, etDescp, etPartNum,
             etQFee, etAgeTo, etAgeFrom, etDateTo, etDateFrom, etQuiz_descp;
     TextView submit,winner;
-    int flag = 0;
+    //int flag = 0;
     Calendar myCalendar;
 
     @Override
@@ -110,7 +114,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 int minute = mcurrentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CreateEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                mTimePicker = new TimePickerDialog(CreateQuizEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         etTimeFrom.setText( selectedHour + ":" + selectedMinute);
@@ -118,7 +122,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-                //Toast.makeText(CreateEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CreateQuizEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -131,7 +135,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 int minute = mcurrentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CreateEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                mTimePicker = new TimePickerDialog(CreateQuizEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         etTimeTo.setText( selectedHour + ":" + selectedMinute);
@@ -139,7 +143,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-                //Toast.makeText(CreateEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CreateQuizEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -172,7 +176,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         etDateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(CreateEventActivity.this, dateto, myCalendar
+                new DatePickerDialog(CreateQuizEventActivity.this, dateto, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -182,8 +186,7 @@ public class CreateEventActivity extends AppCompatActivity  {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(CreateEventActivity.this, datefrom, myCalendar
+                new DatePickerDialog(CreateQuizEventActivity.this, datefrom, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -199,7 +202,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 try {
                     String url = "http://maps.google.co.in/maps?q=" + URLEncoder.encode(etAddress.getText().toString(), "utf-8");
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    CreateEventActivity.this.startActivity(intent);
+                    CreateQuizEventActivity.this.startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -221,15 +224,15 @@ public class CreateEventActivity extends AppCompatActivity  {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.item1:
-                        startActivity(new Intent(CreateEventActivity.this, ProfileActivity.class));
+                        startActivity(new Intent(CreateQuizEventActivity.this, ProfileActivity.class));
                         finish();
                         break;
                     case R.id.item2:
-                        startActivity(new Intent(CreateEventActivity.this, QuizzesActivity.class));
+                        startActivity(new Intent(CreateQuizEventActivity.this, QuizzesActivity.class));
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(CreateEventActivity.this, CreateEventActivity.class));
+                        startActivity(new Intent(CreateQuizEventActivity.this, CreateQuizEventActivity.class));
                         finish();
                         break;
                     /*case R.id.item4:
@@ -273,6 +276,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");
         email = user.get("email");
+
         etQid.setText(uid);
         //----------------------------------------------------------------------------
 
@@ -290,7 +294,7 @@ public class CreateEventActivity extends AppCompatActivity  {
                 String ageTo=etAgeTo.getText().toString();
                 String ageFrom=etAgeFrom.getText().toString();
 
-                uploadQuiz(useridQ,qTitle
+                createQuizEvent(useridQ,qTitle
                         ,qDescp,
                         partnum,
                         qFrom,
@@ -298,16 +302,6 @@ public class CreateEventActivity extends AppCompatActivity  {
                         address,
                         fee,ageTo,
                         ageFrom);
-
-                /*Toast.makeText(CreateEventActivity.this, session.getUserId()+
-                        etQname.getText().toString()+etDescp.getText().toString()+
-                        etPartNum.getText().toString()+
-                        etDateFrom.getText().toString()+" "+etTimeFrom.getText().toString()
-                        +etDateTo.getText().toString()+" "+etTimeTo.getText().toString()+
-                        etAddress.getText().toString()+
-                        etQFee.getText().toString()+
-                        etAgeTo.getText().toString()+
-                        etAgeFrom.getText().toString(), Toast.LENGTH_LONG).show();*/
 
                 String textone=useridQ+" "+
                         qTitle+" "+qDescp+" "+
@@ -323,6 +317,7 @@ public class CreateEventActivity extends AppCompatActivity  {
             }
         });
     }
+
 //--------------------------------------UTILITIES---------------------------------------------------------
 
     private void updateLabelDateFrom() {
@@ -330,7 +325,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         etDateFrom.setText(sdf.format(myCalendar.getTime()));
-        Toast.makeText(this, etDateFrom.getText(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, etDateFrom.getText(), Toast.LENGTH_SHORT).show();
     }
 
     private void updateLabelDateTo() {
@@ -338,7 +333,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         etDateTo.setText(sdf.format(myCalendar.getTime()));
-        Toast.makeText(this, etDateTo.getText(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, etDateTo.getText(), Toast.LENGTH_SHORT).show();
     }
 
     public boolean isConnected() {
@@ -348,15 +343,15 @@ public class CreateEventActivity extends AppCompatActivity  {
     }
 //------------------------------------------------------------------------------------------------------------------------
 
-    private void uploadQuiz(final String uid, final String title, final String description,
+    private void createQuizEvent(final String uid, final String title, final String description,
                             final String partc_count, final String date_from,
                             final String date_to,final String address,final String price,
                             final String age_range_to, final String age_range_from) {
 
         // Tag used to cancel the request
-        String tag_string_req = "req_quizmake";
+        String tag_string_req = "req_create_quiz_event";
 
-        pDialog.setMessage("Updating ...");
+        pDialog.setMessage("Creating quiz event...");
         showDialog();
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
@@ -364,7 +359,7 @@ public class CreateEventActivity extends AppCompatActivity  {
 
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Update Response: " + response.toString());
+                Log.d(TAG, "Quiz event creation res: " + response.toString());
                 hideDialog();
 
                 JSONObject jObj;
@@ -373,18 +368,18 @@ public class CreateEventActivity extends AppCompatActivity  {
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
-                        // JSONObject user = jObj.getJSONObject("user");
-                        Toast.makeText(getApplicationContext(), "User successfully updated your account", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Successfully created a quiz " +
+                                        "event...", Toast.LENGTH_LONG).show();
 
                         // Launch FirstActivity
                         Intent intent = new Intent(
-                                CreateEventActivity.this,
+                                CreateQuizEventActivity.this,
                                 FirstActivity.class);
                         startActivity(intent);
                         finish();
 
                     } else {
-                        // Error occurred in updation. Get the error message
+                        // Error occurred in creation. Get the error message
                         String errorMsg = jObj.getString("error_msg");
                         Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
                     }
@@ -395,7 +390,7 @@ public class CreateEventActivity extends AppCompatActivity  {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Updation Error: " + error.getMessage());
+                Log.e(TAG, "Quiz event creation err: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
@@ -403,37 +398,40 @@ public class CreateEventActivity extends AppCompatActivity  {
             @Override
             protected Map<String, String> getParams() {
 
-                // Posting params to register url
+                // Posting params to url
                 Map<String, String> params = new HashMap<String, String>();
-
-                params.put("title", title);
+                params.put("title", title);//name
                 params.put("description", description);
-                //params.put("category", dob);
                 params.put("participant_count_max", partc_count);
                 params.put("datetime_from", date_from);
                 params.put("datetime_to", date_to);
-                params.put("address", address);
-                params.put("price", price);
+                params.put("price", price);//participation cost
                 params.put("age_range_to", age_range_to);
                 params.put("age_range_from", age_range_from);
-                params.put("user_id", uid);
-                params.put("category","Cars");
-                params.put("level","Local");
-                params.put("gps","0");
-                params.put("state","Gurgaon");
-                params.put("city","Gurgaon");
-                params.put("prizes","20");
-                params.put("cplarge","");
-                params.put("cpsmall","");
+                params.put("address", address);//
+
+                params.put("user_id", uid);//imp...
+                params.put("category","Cars");//TODO code not in place...
+                params.put("level","Local");//TODO code not in place...
+
+                params.put("gps","0");//?
                 params.put("maps_link","");
+
+                params.put("state","Gurgaon");//?
+                params.put("city","Kolkata");
+
+
+                params.put("prizes","20");
+                params.put("cplarge","");//cash prize 2...?
+                params.put("cpsmall","");//cash prize 1...?
 
                 return params;
             }
         };
-
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);//
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
+
 
     private void showDialog() {
         if (!pDialog.isShowing())
@@ -456,13 +454,15 @@ public class CreateEventActivity extends AppCompatActivity  {
         finish();
     }
 
+
     //--------------IMAGE UPLOAD---------------------------------------------------------------------
 
     private void showFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select an image"),
+                PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -481,6 +481,7 @@ public class CreateEventActivity extends AppCompatActivity  {
             }
         }
     }
+
 
     public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

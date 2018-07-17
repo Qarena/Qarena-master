@@ -43,11 +43,14 @@ public class AccountEdit extends Activity implements View.OnClickListener {
     ProgressDialog pDialog;
     SessionManager session;
     SQLiteHandler db;
+
     String uid = new String();
     String email = new String();
+
     public Bitmap dp;
     ImageButton dpView;
     private int PICK_IMAGE_REQUEST = 1;
+
     String TAG = AccountEdit.class.getSimpleName();
     EditText etEmail,etPassword, etCpassword, etCity, etState, etCountry, etFname, etLname,etUid, etDob;
     Button submit;
@@ -103,10 +106,12 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         }
 
         // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
+        HashMap<String, String> user = db.getUserDetails();//TODO empty user when coming from
+        // ProfileActvity fab click
 
         uid = user.get("user_id");
         email = user.get("email");
+
         etUid.setText(uid);
         loadAccount(uid);
 
@@ -153,7 +158,8 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         if (v.getId() == R.id.submit) {
 
             if (password.isEmpty()) {
-                Toast.makeText(this.getApplicationContext(), "Password Cannot be empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.getApplicationContext(), "Password cannot be empty", Toast
+                        .LENGTH_SHORT).show();
                 return;
             }
             if (!cpassword.equals(password) && password.isEmpty()) {
@@ -162,7 +168,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 return;
             }
             if (!isConnected()) {
-                Toast.makeText(getApplicationContext(), "Not connected to the internet!!", Toast
+                Toast.makeText(getApplicationContext(), "Not connected to the internet!!!", Toast
                         .LENGTH_SHORT).show();
             } else {
                 etUser(uid, dp, password, dob, country, state, city, fname, lname);
@@ -213,7 +219,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                         // Error occurred in registration. Get the error
                         // message
                         String errorMsg = jObj.getString("error_msg");
-                        //Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -223,7 +229,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
-                //Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -232,13 +238,12 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-
                 params.put("pro_pic", getStringImage(scaleDown(dp,800,true)));
                 params.put("password", password);
                 params.put("dob", dob);
                 params.put("country", country);
-                params.put("state", state);
-                params.put("city", city);
+                params.put("state", state);//
+                params.put("city", city);//
                 params.put("first_name", fname);
                 params.put("last_name", lname);
                 params.put("user_id",uid);
@@ -266,7 +271,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
 
         db.deleteUsers();
 
-        // Launching the login activity
+        // Launching the FirstActivity
         Intent intent = new Intent(getApplicationContext(), FirstActivity.class);
         startActivity(intent);
         finish();
@@ -288,7 +293,8 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select an image"),
+                PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -356,8 +362,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Update Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -366,7 +371,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("uid", uid);
-                params.put("type", "0");
+                params.put("type", "0");//TODO remove hard coding...
                 return params;
             }
         };

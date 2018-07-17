@@ -114,7 +114,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Move to first row
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
-            user.put("user_id", cursor.getString(cursor.getColumnIndex("user_id")));//change
+            user.put("user_id", cursor.getString(cursor.getColumnIndex("user_id")));//TODO change
             // hardcoded values...
             user.put("email", cursor.getString(cursor.getColumnIndex("email")));
             user.put("password", cursor.getString(cursor.getColumnIndex("password")));
