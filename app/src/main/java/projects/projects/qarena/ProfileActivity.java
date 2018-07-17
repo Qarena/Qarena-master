@@ -78,10 +78,10 @@ public class ProfileActivity extends AppCompatActivity {
     SQLiteHandler db;
 
     private static final String TAG = ProfileActivity.class.getSimpleName();
-    String uid = new String();//""
+    String uid = new String();
     String user_id;
     private TextView sortOption;
-    private String city = "Kolkata";
+    private String city = "Kolkata";//TODO
     RatingBar ratingBar;
 
     public static final int REQUEST_EXTERNAL_PERMISSION_CODE = 666;
@@ -109,8 +109,7 @@ public class ProfileActivity extends AppCompatActivity {
         sortOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String[] cities = new String[]{"Gurgaon","Kolkata", "Jaynagar", "Raniganj",
-                        "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
+                final String[] cities = new String[]{"Gurgaon","Kolkata", "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
                 new AlertDialog.Builder(ProfileActivity.this)
                         .setTitle("Choose City")
                         .setItems(cities,
@@ -167,7 +166,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         quizRecycler = (RecyclerView) findViewById(R.id.quiz_recycler);
-        loadQuiz("Kolkata");
+        loadQuiz(city);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -311,11 +310,16 @@ public class ProfileActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 //Toast.makeText(ProfileActivity.this, dataModelArrayList.toString(), Toast.LENGTH_SHORT).show();
                 quizRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-
                 adapter = new ProfileQuizRecyclerAdapter(ProfileActivity.this, dataModelArrayList);
                 quizRecycler.setAdapter(adapter);
+
+                //TODO
+                /*click listener on a list item here in the recycler view to get to the
+                CreateQuizEventActivity, with all the prefilled values gotten from the
+                        URL_QuizDetails backend url endpoint, with the help of the quiz_id*/
             }
         }, new Response.ErrorListener() {
             @Override

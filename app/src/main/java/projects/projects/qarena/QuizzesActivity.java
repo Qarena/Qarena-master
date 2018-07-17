@@ -92,8 +92,8 @@ public class QuizzesActivity extends AppCompatActivity {
         sortOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String[] cities = new String[]{"Gurgaon", "Kolkata", "Jaynagar", "Raniganj",
-                        "Bhubaneswar", "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
+                final String[] cities = new String[]{"Gurgaon", "Kolkata", "Bhubaneswar",
+                        "Delhi", "Bangalore", "Mumbai", "Chennai", "Coimbatore", "Jaipur", "Ahmedabad", "Thiruvananthapuram"};
                 new AlertDialog.Builder(QuizzesActivity.this)
                         .setTitle("Choose City")
                         .setItems(cities,
@@ -309,7 +309,6 @@ public class QuizzesActivity extends AppCompatActivity {
             layout.findViewById(R.id.organizer).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO REGISTER
                     Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
                     i.putExtra("person_id", quizzes.get(position).organizer_id);
                     startActivity(i);
@@ -343,7 +342,6 @@ public class QuizzesActivity extends AppCompatActivity {
             layout.findViewById(R.id.quiz_register).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO REGISTER
                     String[] vals = quizzes.get(position).age_res.split(" ");
                     int age_to = Integer.parseInt(vals[0]);
                     int age_from = Integer.parseInt(vals[2]);
