@@ -95,11 +95,12 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(KEY_COUNTRY,country);//country
         values.put(KEY_STATE,state);//state
         values.put(KEY_CITY,city);//city
+
         // Inserting Row
         long id = db.insert(TABLE_USER, null, values);
         db.close(); // Closing database connection
 
-        Log.d(TAG, "New user inserted into sqlite: " + id);
+        Log.d(TAG, "New user info inserted id: " + id);
     }
 
     /**
@@ -111,6 +112,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+
         // Move to first row
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
@@ -127,14 +129,16 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
+
         // return user
-        Log.d(TAG, "Fetching user from Sqlite: " + user.toString());
+        Log.d(TAG, "Fetching user details: " + user.toString());
 
         return user;
     }
 
     /**
-     * Re crate database Delete all tables and create them again
+     * Re create database
+     * Delete all tables and create them again
      */
     public void deleteUsers() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -142,7 +146,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.delete(TABLE_USER, null, null);
         db.close();
 
-        Log.d(TAG, "Deleted all user info from sqlite");
+        Log.d(TAG, "Deleted all user data...");
     }
 
     /**
@@ -160,7 +164,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         long id = db.insert(TABLE_FILES, null, values);
         db.close(); // Closing database connection
 
-        Log.d(TAG, "New file name inserted into sqlite: " + id);
+        Log.d(TAG, "New file inserted into the files table id:" + id);
     }
 
     public HashMap<String,String> getAllFiles(){
@@ -181,7 +185,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
 
         // return files
-        Log.d(TAG, "Fetching fileNames & filePaths from Sqlite: " + files.toString());
+        Log.d(TAG, "Fetching fileNames & filePaths from the files table: " + files.toString());
         return files;
     }
 

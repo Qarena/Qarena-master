@@ -43,7 +43,8 @@ public class AppConfig {
 
     public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
 
-    public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";
+    public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";//POST to
+    // create & PUT to update...
     public static String URL_Load_QUIZ = "http://35.198.203.61/utilities/search_quiz";//ProfileActivity
     public static String URL_GetAllQuizzes =
             "http://35.198.203.61/utilities/advanced_search_quiz";//QuizzesActivity
@@ -51,7 +52,7 @@ public class AppConfig {
     public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";
 
     //List of all the files uploaded by an user, using GET method...
-    // public static String URL_QuizListAllFiles = "http://35.198.203.61/utilities/get_ppt?user_id=";
+    //public static String URL_QuizListAllFiles = "http://35.198.203.61/utilities/get_ppt?user_id=";
 
     //Retrieve a file uploaded, using POST method, with the help of file_name
     //public static String URL_QuizGetAFile = "http://35.198.203.61/utilities/get_ppt";
