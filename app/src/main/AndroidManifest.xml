@@ -40,7 +40,7 @@
             android:label="My Profile"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".CreateEventActivity"
+            android:name=".CreateQuizEventActivity"
             android:label="Create a quiz"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

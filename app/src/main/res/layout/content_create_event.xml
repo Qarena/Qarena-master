@@ -232,7 +232,7 @@
                     android:layout_gravity="center">
 
                     <Spinner
-                        android:id="@+id/select_catecgory"
+                        android:id="@+id/select_category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:entries="@array/category_arrays"
