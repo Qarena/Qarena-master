@@ -255,6 +255,7 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+
     private void showDialog() {
         if (!pDialog.isShowing())
             pDialog.show();
@@ -280,6 +281,26 @@ public class AccountEdit extends Activity implements View.OnClickListener {
 
     //--------------IMAGE UPLOAD---------------------------------------------------------------------
 
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select an image"),
+                PICK_IMAGE_REQUEST);
+    }
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
+                                   boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height =  Math.round((float) ratio * realImage.getHeight());;
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
+    }
+
     public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -289,13 +310,6 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         return encodedImage;
     }
 
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select an image"),
-                PICK_IMAGE_REQUEST);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -379,16 +393,5 @@ public class AccountEdit extends Activity implements View.OnClickListener {
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
-    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
-                                   boolean filter) {
-        float ratio = Math.min(
-                (float) maxImageSize / realImage.getWidth(),
-                (float) maxImageSize / realImage.getHeight());
-        int width = Math.round((float) ratio * realImage.getWidth());
-        int height =  Math.round((float) ratio * realImage.getHeight());;
-        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
-                height, filter);
-        return newBitmap;
-    }
 }
 
