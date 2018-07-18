@@ -185,10 +185,10 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(new Intent(ProfileActivity.this, CreateQuizEventActivity.class));
                         finish();
                         break;
-                    /*case R.id.item4:
+                    case R.id.item4:
                         logoutUser();
                         break;
-                    case R.id.item5:
+                    /*case R.id.item5:
                         break;*/
                 }
                 return true;
