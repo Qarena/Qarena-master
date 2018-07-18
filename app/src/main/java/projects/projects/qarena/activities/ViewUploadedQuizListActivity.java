@@ -44,6 +44,10 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Uploaded Quizzes");
+        }
+
         /*pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);*/
 
