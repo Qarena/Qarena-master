@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,7 +35,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
 
     //private ProgressDialog pDialog;
     private ListView listView;
-    private HashMap<String, String> filesMap;
+    private ArrayList<Pair<String,String>> filesMap;
     private ArrayList<String> fileNamesList;
 
     @Override
@@ -64,7 +65,8 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         /*HashMap<String, String> user = db.getUserDetails();
         uid = user.get("user_id");*/
 
-        filesMap = db.getAllFiles();
+        filesMap = db.getFilesWithDuplicates();
+
         //--------------------------------------------------------
 
         if (filesMap.size() == 0) {
@@ -73,9 +75,8 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         }
 
         else {
-            Set<String> keySet = filesMap.keySet();
             //Creating an ArrayList of keys by passing the keySet
-            fileNamesList = new ArrayList<>(keySet);
+            fileNamesList = getFileNamesList();
 
             listView = (ListView) findViewById(R.id.listView);
             // Set an item click listener for ListView
@@ -86,7 +87,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
                     String selectedItem = (String) parent.getItemAtPosition(position);
                     Log.d(TAG, selectedItem);
 
-                    File file = new File(filesMap.get(selectedItem));
+                    File file = new File(filesMap.get(position).second);
 
                     Intent target = new Intent(Intent.ACTION_VIEW);
                     target.setDataAndType(Uri.fromFile(file), ProfileActivity.quizFileUploadDocType);
@@ -119,6 +120,14 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), FirstActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private ArrayList<String> getFileNamesList(){
+        ArrayList<String> fileNames = new ArrayList<>();
+        for(Pair<String,String> pair: filesMap){
+            fileNames.add(pair.first);
+        }
+        return fileNames;
     }
 
     /*private void showDialog() {

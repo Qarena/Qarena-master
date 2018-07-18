@@ -11,7 +11,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SQLiteHandler extends SQLiteOpenHelper {
@@ -178,6 +180,28 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 files.put(cursor.getString(cursor.getColumnIndex(KEY_FILE_NAME)), cursor.getString(cursor.getColumnIndex(KEY_FILE_PATH)));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        // return files
+        Log.d(TAG, "Fetching fileNames & filePaths from the files table: " + files.toString());
+        return files;
+    }
+
+    public ArrayList<Pair<String,String>> getFilesWithDuplicates(){
+        ArrayList<Pair<String,String>> files = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_FILES;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                files.add(new Pair<>(cursor.getString(cursor.getColumnIndex(KEY_FILE_NAME)), cursor.getString(cursor.getColumnIndex(KEY_FILE_PATH))));
             } while (cursor.moveToNext());
         }
 
