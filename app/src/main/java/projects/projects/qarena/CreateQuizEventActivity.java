@@ -325,7 +325,6 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
         });
 
         checkForUpdate();
-
     }
 
 //--------------------------------------UTILITIES---------------------------------------------------------
@@ -341,9 +340,9 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
 
     private void changeLabels(){
         if (isUpdate){
-            getSupportActionBar().setTitle("Update Quiz");
+            getSupportActionBar().setTitle("Update Quiz Event");
         } else {
-            getSupportActionBar().setTitle("Create Quiz");
+            getSupportActionBar().setTitle("Create Quiz Event");
         }
 
     }
@@ -421,14 +420,13 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Quiz event creation err: " + error.getMessage());
+                Log.e(TAG, "Quiz event updation err: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
             @Override
             protected Map<String, String> getParams() {
-
                 // Posting params to url
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("quiz_id", quizId);

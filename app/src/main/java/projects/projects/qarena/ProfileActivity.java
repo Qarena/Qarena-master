@@ -302,11 +302,10 @@ public class ProfileActivity extends AppCompatActivity {
                     for (int i = 0; i < quizArray.length(); i++) {
                         JSONObject quizDetail = quizArray.getJSONObject(i);
                         QuizEntity quizEntity = new QuizEntity();
+
                         quizEntity.setTitle(quizDetail.getString("title"));
-                        //Toast.makeText(ProfileActivity.this,quizDetail.getString("title") , Toast.LENGTH_SHORT).show();
                         quizEntity.setDescription(quizDetail.getString("description"));
                         quizEntity.setQuizId(quizDetail.getString("quiz_id"));
-                        //Toast.makeText(ProfileActivity.this,quizDetail.getString("description") , Toast.LENGTH_SHORT).show();
 
                         dataModelArrayList.add(quizEntity);
                     }
@@ -319,12 +318,7 @@ public class ProfileActivity extends AppCompatActivity {
                 adapter = new ProfileQuizRecyclerAdapter(ProfileActivity.this, dataModelArrayList);
                 quizRecycler.setAdapter(adapter);
 
-                //TODO
-                /*click listener on a list item here in the recycler view to get to the
-                CreateQuizEventActivity, with all the prefilled values gotten from the
-                        URL_QuizDetails backend url endpoint, with the help of the quiz_id*/
                 addListenersToRecycler();
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -352,8 +346,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-//                Toast.makeText(ProfileActivity.this, "Single Click on position        :"+position,
-//                        Toast.LENGTH_SHORT).show();
                 QuizEntity selectedQuiz = adapter.getQuizEntity(position);
                 addUpdateActivity(selectedQuiz);
             }
