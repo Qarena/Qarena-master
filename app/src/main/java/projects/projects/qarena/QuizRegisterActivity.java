@@ -37,7 +37,7 @@ public class QuizRegisterActivity extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(QuizRegisterActivity.this, CreateQuizEventActivity.class));
+                        startActivity(new Intent(QuizRegisterActivity.this, QuizEventActivity.class));
                         finish();
                         break;
                     /*case R.id.item4:

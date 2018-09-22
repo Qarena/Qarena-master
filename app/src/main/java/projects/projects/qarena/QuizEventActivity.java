@@ -54,7 +54,7 @@ import projects.projects.qarena.helper.SessionManager;
 /**
  * Created by Arka Bhowmik on 2/22/2017.
  */
-public class CreateQuizEventActivity extends AppCompatActivity  {
+public class QuizEventActivity extends AppCompatActivity  {
 
     ProgressDialog pDialog;
     SessionManager session;
@@ -121,7 +121,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 int minute = mcurrentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CreateQuizEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                mTimePicker = new TimePickerDialog(QuizEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         etTimeFrom.setText( selectedHour + ":" + selectedMinute);
@@ -129,7 +129,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-                //Toast.makeText(CreateQuizEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(QuizEventActivity.this, etTimeFrom.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -142,7 +142,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 int minute = mcurrentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CreateQuizEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                mTimePicker = new TimePickerDialog(QuizEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         etTimeTo.setText( selectedHour + ":" + selectedMinute);
@@ -150,7 +150,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-                //Toast.makeText(CreateQuizEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(QuizEventActivity.this, etTimeTo.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -183,7 +183,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
         etDateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(CreateQuizEventActivity.this, dateto, myCalendar
+                new DatePickerDialog(QuizEventActivity.this, dateto, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -193,7 +193,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
 
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(CreateQuizEventActivity.this, datefrom, myCalendar
+                new DatePickerDialog(QuizEventActivity.this, datefrom, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -209,7 +209,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 try {
                     String url = "http://maps.google.co.in/maps?q=" + URLEncoder.encode(etAddress.getText().toString(), "utf-8");
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    CreateQuizEventActivity.this.startActivity(intent);
+                    QuizEventActivity.this.startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -231,15 +231,15 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.item1:
-                        startActivity(new Intent(CreateQuizEventActivity.this, ProfileActivity.class));
+                        startActivity(new Intent(QuizEventActivity.this, ProfileActivity.class));
                         finish();
                         break;
                     case R.id.item2:
-                        startActivity(new Intent(CreateQuizEventActivity.this, QuizzesActivity.class));
+                        startActivity(new Intent(QuizEventActivity.this, QuizzesActivity.class));
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(CreateQuizEventActivity.this, CreateQuizEventActivity.class));
+                        startActivity(new Intent(QuizEventActivity.this, QuizEventActivity.class));
                         finish();
                         break;
                     /*case R.id.item4:
@@ -501,7 +501,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
 
                         // Launch FirstActivity
                         Intent intent = new Intent(
-                                CreateQuizEventActivity.this,
+                                QuizEventActivity.this,
                                 FirstActivity.class);
                         startActivity(intent);
                         finish();
@@ -591,7 +591,7 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
 
                         // Launch FirstActivity
                         Intent intent = new Intent(
-                                CreateQuizEventActivity.this,
+                                QuizEventActivity.this,
                                 FirstActivity.class);
                         startActivity(intent);
                         finish();

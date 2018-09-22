@@ -184,7 +184,7 @@ public class ProfileActivity extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(ProfileActivity.this, CreateQuizEventActivity.class));
+                        startActivity(new Intent(ProfileActivity.this, QuizEventActivity.class));
                         finish();
                         break;
                     case R.id.item4:
@@ -360,9 +360,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void addUpdateActivity(QuizEntity quizEntity){
-        Intent intent = new Intent(this, CreateQuizEventActivity.class);
-        intent.putExtra(CreateQuizEventActivity.IS_UPDATING, true);
-        intent.putExtra(CreateQuizEventActivity.QUIZ_ID, quizEntity.getQuizId());
+        Intent intent = new Intent(this, QuizEventActivity.class);
+        intent.putExtra(QuizEventActivity.IS_UPDATING, true);
+        intent.putExtra(QuizEventActivity.QUIZ_ID, quizEntity.getQuizId());
         startActivity(intent);
     }
 

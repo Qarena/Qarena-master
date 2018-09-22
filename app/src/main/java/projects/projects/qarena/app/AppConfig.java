@@ -44,7 +44,7 @@ public class AppConfig {
 
     public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
 
-
+    //QuizEventActivity...
     public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";
     //use this to create a new quiz...
     public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";

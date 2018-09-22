@@ -139,7 +139,7 @@ public class QuizzesActivity extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.item3:
-                        startActivity(new Intent(QuizzesActivity.this, CreateQuizEventActivity.class));
+                        startActivity(new Intent(QuizzesActivity.this, QuizEventActivity.class));
                         finish();
                         break;
                     case R.id.item4:
