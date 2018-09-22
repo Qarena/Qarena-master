@@ -301,14 +301,26 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
                 String ageTo=etAgeTo.getText().toString();
                 String ageFrom=etAgeFrom.getText().toString();
 
-                createQuizEvent(useridQ,qTitle
-                        ,qDescp,
-                        partnum,
-                        qFrom,
-                        qTo,
-                        address,
-                        fee,ageTo,
-                        ageFrom);
+                if(isUpdate)
+                    updateQuizEvent(useridQ,
+                            qTitle,
+                            qDescp,
+                            partnum,
+                            qFrom,
+                            qTo,
+                            address,
+                            fee,ageTo,
+                            ageFrom);
+                else
+                    createQuizEvent(useridQ,
+                                    qTitle,
+                                    qDescp,
+                                    partnum,
+                                    qFrom,
+                                    qTo,
+                                    address,
+                                    fee,ageTo,
+                                    ageFrom);
 
                 String textone=useridQ+" "+
                         qTitle+" "+qDescp+" "+
@@ -459,6 +471,95 @@ public class CreateQuizEventActivity extends AppCompatActivity  {
         return networkInfo != null && networkInfo.isConnected();
     }
 //------------------------------------------------------------------------------------------------------------------------
+    private void updateQuizEvent(final String uid, final String title, final String description,
+                                 final String partc_count, final String date_from,
+                                 final String date_to,final String address,final String price,
+                                 final String age_range_to, final String age_range_from) {
+
+        // Tag used to cancel the request
+        String tag_string_req = "req_update_quiz_event";
+
+        pDialog.setMessage("Updating quiz event...");
+        showDialog();
+
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                AppConfig.URL_UPDATE_QUIZ, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Quiz event updation res: " + response.toString());
+                hideDialog();
+
+                JSONObject jObj;
+                try {
+                    jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+
+                    if (!error) {
+                        Toast.makeText(getApplicationContext(), "Successfully update quiz " +
+                                "event...", Toast.LENGTH_LONG).show();
+
+                        // Launch FirstActivity
+                        Intent intent = new Intent(
+                                CreateQuizEventActivity.this,
+                                FirstActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    } else {
+                        // Error occurred in creation. Get the error message
+                        String errorMsg = jObj.getString("error_msg");
+                        Toast.makeText(getApplicationContext(),errorMsg, Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Quiz event updation err: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
+                hideDialog();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Posting params to url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("title", title);//name
+                params.put("description", description);
+                params.put("participant_count_max", partc_count);
+                params.put("datetime_from", date_from);
+                params.put("datetime_to", date_to);
+                params.put("price", price);//participation cost
+                params.put("age_range_to", age_range_to);
+                params.put("age_range_from", age_range_from);
+                params.put("address", address);//
+
+                params.put("user_id", uid);//imp...
+                params.put("category","Cars");//TODO code not in place...
+                params.put("level","Local");//TODO code not in place...
+
+                params.put("gps","0");//?
+                params.put("maps_link","");
+
+                params.put("state","Gurgaon");//?
+                params.put("city","Kolkata");
+
+
+                params.put("prizes","20");
+                params.put("cplarge","");//cash prize 2...?
+                params.put("cpsmall","");//cash prize 1...?
+
+                params.put("quiz_id", quizId);//newly added...
+                return params;
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
 
     private void createQuizEvent(final String uid, final String title, final String description,
                             final String partc_count, final String date_from,

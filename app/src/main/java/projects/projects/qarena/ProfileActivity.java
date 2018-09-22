@@ -333,6 +333,7 @@ public class ProfileActivity extends AppCompatActivity {
                 // Posting parameters to url
                 Map<String, String> params = new HashMap<>();
                 params.put("city", city);
+                params.put("user_id", user_id);
                 return params;
             }
         };

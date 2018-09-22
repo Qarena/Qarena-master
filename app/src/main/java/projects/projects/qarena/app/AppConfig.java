@@ -41,13 +41,16 @@ public class AppConfig {
     public static String URL_GMaps = "http://maps.google.co.in/maps?q=";
 
 
+
     public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
 
 
     public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";
-    //use this same endpoint as POST to create a new quiz & PUT to update an existing 1, by now
-    //providing the quiz_id in the PUT req, for the quiz to be updated...
-    //has got datetime_from & datetime_to timestamps...
+    //use this to create a new quiz...
+    public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";
+    public static String URL_UPDATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";
+    //use this to update a given quiz, sending quiz_id in the PUT req...
+
 
     public static String URL_SEARCH_QUIZ = "http://35.198.203.61/utilities/search_quiz";
     //Basic or reg search in ProfileActivity, now provide an optional param user_id to get quizzes
@@ -61,7 +64,6 @@ public class AppConfig {
     // the city (optional now but needed in our case) & the datetime_from params sent to the
     // server, & compared there with the server's current timestamp for live status...
 
-    public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";//?
 
     //List of all the files uploaded by an user, using GET method...
     //public static String URL_QuizListAllFiles = "http://35.198.203.61/utilities/get_ppt?user_id=";
