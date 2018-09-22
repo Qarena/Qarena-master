@@ -287,7 +287,7 @@ public class ProfileActivity extends AppCompatActivity {
         String tag_string_quiz = "req_quiz";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                AppConfig.URL_Load_QUIZ, new Response.Listener<String>() {
+                AppConfig.URL_SEARCH_QUIZ, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Loading Quiz Response: " + response.toString());

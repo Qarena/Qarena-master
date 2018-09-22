@@ -179,7 +179,7 @@ public class QuizzesActivity extends AppCompatActivity {
         final RequestQueue requestQueue = VolleySingleton.getRequestQueue(this);
         requestQueue.start();
 
-        StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_GetAllQuizzes,
+        StringRequest request = new StringRequest(Request.Method.POST, AppConfig.URL_ADVANCED_SEARCH_QUIZ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -233,7 +233,8 @@ public class QuizzesActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("city", city);
-                params.put("datetime_from", "2017-01-01 00:00");//TODO remove hard coded...
+                params.put("datetime_from", "2017-01-01 00:00");//TODO change it send
+                // datetime_to for a quiz...
                 return params;
             }
         };

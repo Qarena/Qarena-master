@@ -43,13 +43,25 @@ public class AppConfig {
 
     public static String URL_QuizUpload = "http://35.198.203.61/utilities/set_ppt";
 
-    public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";//POST to
-    // create & PUT to update...
-    public static String URL_Load_QUIZ = "http://35.198.203.61/utilities/search_quiz";//ProfileActivity
-    public static String URL_GetAllQuizzes =
-            "http://35.198.203.61/utilities/advanced_search_quiz";//QuizzesActivity
 
-    public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";
+    public static String URL_CREATE_QUIZ = "http://35.198.203.61/utilities/create_quiz";
+    //use this same endpoint as POST to create a new quiz & PUT to update an existing 1, by now
+    //providing the quiz_id in the PUT req, for the quiz to be updated...
+    //has got datetime_from & datetime_to timestamps...
+
+    public static String URL_SEARCH_QUIZ = "http://35.198.203.61/utilities/search_quiz";
+    //Basic or reg search in ProfileActivity, now provide an optional param user_id to get quizzes
+    // filtered based on the user_id as res, along with the user_id in the res... city param is
+    // also optional now, which was not intended, but we anyways use it while sending a req...
+
+    public static String URL_ADVANCED_SEARCH_QUIZ =
+            "http://35.198.203.61/utilities/advanced_search_quiz";
+    //same comments as above in QuizzesActivity now, with datetime_from (quiz start date)
+    // defaulting to the server time, if not sent... quizzes need to be filtered & sent based on
+    // the city (optional now but needed in our case) & the datetime_from params sent to the
+    // server, & compared there with the server's current timestamp for live status...
+
+    public static String URL_QuizDetails = "http://35.198.203.61/utilities/get_quiz_details";//?
 
     //List of all the files uploaded by an user, using GET method...
     //public static String URL_QuizListAllFiles = "http://35.198.203.61/utilities/get_ppt?user_id=";

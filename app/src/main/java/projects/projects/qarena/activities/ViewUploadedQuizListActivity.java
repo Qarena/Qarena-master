@@ -16,8 +16,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
 
 import projects.projects.qarena.FirstActivity;
 import projects.projects.qarena.ProfileActivity;
@@ -46,7 +44,7 @@ public class ViewUploadedQuizListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Uploaded Quizzes");
+            getSupportActionBar().setTitle("Uploaded Quizz Files");
         }
 
         /*pDialog = new ProgressDialog(this);
