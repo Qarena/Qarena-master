@@ -353,8 +353,10 @@ public class QuizEventActivity extends AppCompatActivity  {
     private void changeLabels(){
         if (isUpdate){
             getSupportActionBar().setTitle("Update Quiz Event");
+            submit.setText("Update Quiz");
         } else {
             getSupportActionBar().setTitle("Create Quiz Event");
+            submit.setText("Create Quiz");
         }
 
     }
@@ -518,7 +520,7 @@ public class QuizEventActivity extends AppCompatActivity  {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Quiz event updation err: " + error.getMessage());
+                Log.e(TAG, "Quiz event updation err: " + error.getMessage() + error.networkResponse);
                 Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
