@@ -498,7 +498,7 @@ public class QuizEventActivity extends AppCompatActivity  {
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
-                        Toast.makeText(getApplicationContext(), "Successfully update quiz " +
+                        Toast.makeText(getApplicationContext(), "Successfully updated quiz " +
                                 "event...", Toast.LENGTH_LONG).show();
 
                         // Launch FirstActivity

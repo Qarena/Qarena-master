@@ -59,9 +59,9 @@ public class AppConfig {
 
     public static String URL_ADVANCED_SEARCH_QUIZ =
             "http://35.198.203.61/utilities/advanced_search_quiz";
-    //same comments as above in QuizzesActivity now, with datetime_from (quiz start date)
+    //same comments as above in QuizzesActivity now, with datetime_to (quiz end date)
     // defaulting to the server time, if not sent... quizzes need to be filtered & sent based on
-    // the city (optional now but needed in our case) & the datetime_from params sent to the
+    // the city (optional now but needed in our case) & the datetime_to params sent to the
     // server, & compared there with the server's current timestamp for live status...
 
 
